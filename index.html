@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Progressive Web App (PWA) Offline Support -->
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#2563eb">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -2344,6 +2346,46 @@
   </div>
 
   <!-- 2. MODAL PETUNJUK BERMAIN -->
+  <!-- Modal Panduan Unduh Web App (PWA) di Chrome -->
+  <div class="modal-backdrop" id="modalPwaInstall">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3><span>📲</span> Pasang Aplikasi di Google Chrome</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalPwaInstall')">&times;</button>
+      </div>
+      <div class="modal-body" style="font-size: 0.8rem; line-height: 1.5; color: #1e293b;">
+        <p style="margin-bottom: 12px;">Game ini dapat diunduh dan dipasang langsung dari Google Chrome / Edge ke laptop atau HP Anda agar bisa dibuka kapan saja secara offline.</p>
+        
+        <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+          <div style="font-weight: 800; color: #1e40af; margin-bottom: 6px; font-size: 0.85rem;">💻 Di Laptop / Komputer (Google Chrome / Edge):</div>
+          <ol style="margin-left: 18px; margin-bottom: 0;">
+            <li style="margin-bottom: 4px;">Lihat ke <strong>bilah alamat (URL bar) di kanan atas browser Chrome</strong>.</li>
+            <li style="margin-bottom: 4px;">Klik ikon <strong>Komputer / Install (📥)</strong> yang ada di samping bintang bookmark.</li>
+            <li>Klik tombol <strong>"Pasang" / "Install"</strong>. Aplikasi akan langsung terpasang di desktop laptop Anda!</li>
+          </ol>
+          <div style="font-size: 0.72rem; color: #2563eb; margin-top: 6px;">
+            <em>Atau: Klik menu titik tiga <strong>(⋮)</strong> di pojok kanan atas ➔ <strong>Simpan dan Bagikan</strong> ➔ <strong>Pasang halaman ini sebagai aplikasi</strong>.</em>
+          </div>
+        </div>
+
+        <div style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+          <div style="font-weight: 800; color: #166534; margin-bottom: 6px; font-size: 0.85rem;">📱 Di HP Android (Chrome):</div>
+          <ol style="margin-left: 18px; margin-bottom: 0;">
+            <li style="margin-bottom: 4px;">Ketuk menu titik tiga <strong>(⋮)</strong> di sudut kanan atas Chrome.</li>
+            <li>Pilih <strong>"Pasang Aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.</li>
+          </ol>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; font-size: 0.74rem; color: #64748b;">
+          ✨ <em>Setelah dipasang, game akan muncul di menu aplikasi/desktop dan dapat dimainkan tanpa perlu membuka browser secara terpisah!</em>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal('modalPwaInstall')">Siap, Mengerti!</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="modalHelp">
     <div class="modal-card">
       <div class="modal-header">
@@ -5020,37 +5062,52 @@
     });
   
     /* ==========================================================================
-       PROGRESSIVE WEB APP (PWA) SERVICE WORKER & OFFLINE REGISTRATION
+       PROGRESSIVE WEB APP (PWA) SERVICE WORKER & INSTALLATION
        ========================================================================== */
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => {
-            console.log('[PWA] Service Worker aktif untuk mode offline:', reg.scope);
-          })
-          .catch((err) => {
-            console.log('[PWA] Service worker info:', err);
-          });
-      });
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .then((reg) => {
+          if (reg) {
+            console.log('[PWA] Service Worker aktif untuk GitHub Pages:', reg.scope);
+            if (typeof reg.update === 'function') reg.update();
+          }
+        })
+        .catch((err) => {
+          console.warn('[PWA] Service worker info:', err);
+        });
     }
 
     let deferredInstallPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredInstallPrompt = e;
+      console.log('[PWA] beforeinstallprompt berhasil ditangkap di Chrome!');
       const installBtn = document.getElementById('btnInstallPwa');
-      if (installBtn) installBtn.style.display = 'inline-flex';
+      if (installBtn) {
+        installBtn.classList.add('pulse-ready');
+        installBtn.innerHTML = '📥 Pasang Aplikasi (PWA)';
+      }
     });
 
-    function installPwaApp() {
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      showToast('🎉', 'Aplikasi Studio Laporan berhasil dipasang di perangkat!');
+      const installBtn = document.getElementById('btnInstallPwa');
+      if (installBtn) installBtn.style.display = 'none';
+    });
+
+    async function installPwaApp() {
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
-        deferredInstallPrompt.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') {
+        try {
+          const choice = await deferredInstallPrompt.userChoice;
+          if (choice && choice.outcome === 'accepted') {
             showToast('📲', 'Aplikasi berhasil dipasang di perangkat!');
           }
-          deferredInstallPrompt = null;
-        });
+        } catch (err) {
+          console.log('[PWA] Install prompt error:', err);
+        }
+        deferredInstallPrompt = null;
       } else {
         openModal('modalPwaInstall');
       }
