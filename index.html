@@ -1,0 +1,5063 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Progressive Web App (PWA) Offline Support -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Studio Laporan">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Studio Laporan Digital - Rancang Tata Letak & Ketik Dokumen Informatika</title>
+  <style>
+    :root {
+      --primary-blue: #2563eb;
+      --primary-blue-dark: #1d4ed8;
+      --primary-blue-light: #dbeafe;
+      --excel-green: #107c41;
+      --excel-green-light: #dcfce7;
+      --snip-amber: #d97706;
+      --snip-amber-light: #fef3c7;
+      --flow-purple: #7c3aed;
+      --flow-purple-light: #ede9fe;
+      --coral-accent: #f43f5e;
+      --paper-shadow: 0 8px 30px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08);
+      --font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #faf5ff 100%);
+      --canvas-scale: 0.65;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    input, textarea {
+      user-select: text !important;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--bg-gradient);
+      color: #1e293b;
+      height: 100vh;
+      max-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* HEADER & TIMER BAR */
+    header {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid #e2e8f0;
+      padding: 4px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      gap: 8px;
+      height: 50px;
+      min-height: 50px;
+      max-height: 50px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--flow-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    .brand-text p {
+      font-size: 0.68rem;
+      color: #64748b;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* TIMER WIDGET */
+    .timer-widget {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      padding: 3px 8px;
+      border-radius: 12px;
+      gap: 6px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+      flex-shrink: 0;
+    }
+
+    .timer-display {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #0f172a;
+      min-width: 58px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    .timer-display.timer-warning {
+      color: #dc2626;
+      animation: pulseTimer 1s infinite alternate;
+    }
+
+    @keyframes pulseTimer {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    .timer-controls {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .timer-btn {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 3px 6px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s;
+    }
+
+    .timer-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* THEME SELECTOR */
+    .theme-selector-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #f1f5f9;
+      padding: 3px 6px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .theme-selector-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+
+    .theme-select {
+      background: white;
+      border: 1.5px solid #cbd5e1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #1e293b;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .theme-select:focus {
+      border-color: var(--primary-blue);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      touch-action: manipulation;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+      color: white;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-success:hover {
+      background: #047857;
+    }
+
+    .btn-purple {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
+      box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3);
+    }
+
+    .btn-purple:hover {
+      background: #6d28d9;
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-outline {
+      background: white;
+      border: 1.5px solid #cbd5e1;
+      color: #334155;
+    }
+
+    .btn-outline:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .btn-icon-only {
+      padding: 5px 8px;
+      border-radius: 7px;
+    }
+
+    /* MAIN APP WORKSPACE */
+    .app-container {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      height: calc(100vh - 50px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* LEFT SIDEBAR: TOOLBOX */
+    .toolbox-panel {
+      width: 270px;
+      min-width: 270px;
+      max-width: 270px;
+      background: white;
+      border-right: 2px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+      transition: transform 0.3s ease;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-bottom: 1.5px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .panel-header h2 {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .panel-header .badge-pill {
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 20px;
+    }
+
+    .toolbox-instruction {
+      padding: 6px 10px;
+      background: #eff6ff;
+      border-bottom: 1px solid #bfdbfe;
+      font-size: 0.68rem;
+      color: #1e40af;
+      line-height: 1.3;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .tap-mode-notice {
+      background: #fef2f2;
+      border: 1.5px dashed var(--coral-accent);
+      color: #9f1239;
+      padding: 6px 10px;
+      margin: 6px 8px 0 8px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      animation: pulseNotice 1.5s infinite;
+      flex-shrink: 0;
+    }
+
+    .tap-mode-notice.active {
+      display: flex;
+    }
+
+    @keyframes pulseNotice {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .toolbox-elements {
+      flex: 1;
+      padding: 8px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-height: 0;
+    }
+
+    .element-card {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 7px 9px;
+      cursor: grab;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .element-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .element-card.is-selected-for-tap {
+      border-color: var(--coral-accent);
+      background: #fff1f2;
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.3);
+      animation: pulseCard 1s infinite alternate;
+    }
+
+    @keyframes pulseCard {
+      from { border-color: var(--coral-accent); }
+      to { border-color: #fb7185; }
+    }
+
+    .element-card.is-placed {
+      opacity: 0.88;
+      border-style: dashed;
+      background: #f8fafc;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .app-icon-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 0.74rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .icon-word { background: #185abd; }
+    .icon-excel { background: #107c41; }
+    .icon-snip { background: #d97706; }
+    .icon-shapes { background: #7c3aed; }
+
+    .card-name {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .card-status-badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 5px;
+    }
+
+    .status-ready {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .status-placed {
+      background: #e2e8f0;
+      color: #64748b;
+    }
+
+    .card-desc {
+      font-size: 0.67rem;
+      color: #64748b;
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .card-btn {
+      flex: 1;
+      padding: 4px 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      transition: all 0.15s;
+    }
+
+    .card-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .card-btn-add {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: var(--primary-blue-dark);
+    }
+
+    .card-btn-tap {
+      background: #fef2f2;
+      border-color: #fecdd3;
+      color: #be123c;
+    }
+
+    /* CENTER WORKSPACE: A4 PAPER */
+    .canvas-viewport {
+      flex: 1;
+      background: #cbd5e1;
+      background-image: 
+        radial-gradient(#94a3b8 1px, transparent 1px),
+        linear-gradient(to right, #f1f5f9 1px, transparent 1px),
+        linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
+      background-size: 20px 20px, 100px 100px, 100px 100px;
+      overflow: auto;
+      padding: 6px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .canvas-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      padding: 3px 10px;
+      border-radius: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      flex-shrink: 0;
+    }
+
+    .canvas-tool-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .canvas-toolbar-divider {
+      width: 1px;
+      height: 16px;
+      background: #cbd5e1;
+      margin: 0 2px;
+    }
+
+    .canvas-tool-btn {
+      background: transparent;
+      border: none;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #475569;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .canvas-tool-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .canvas-tool-btn.active {
+      background: var(--primary-blue-light);
+      color: var(--primary-blue);
+      font-weight: 800;
+    }
+
+    .a4-paper-wrapper {
+      position: relative;
+      width: calc(595px * var(--canvas-scale, 0.65));
+      height: calc(842px * var(--canvas-scale, 0.65));
+      flex-shrink: 0;
+      display: block;
+      margin: 0 auto;
+      transition: width 0.12s ease, height 0.12s ease;
+    }
+
+    .a4-paper {
+      width: 595px;
+      min-height: 842px;
+      height: 842px;
+      background: #ffffff;
+      box-shadow: var(--paper-shadow);
+      border-radius: 4px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: top left;
+      transform: scale(var(--canvas-scale, 0.65));
+      transition: transform 0.12s ease, box-shadow 0.2s;
+      overflow: visible;
+      touch-action: none;
+    }
+
+    .a4-paper.drag-over {
+      box-shadow: 0 0 0 4px var(--primary-blue), 0 20px 40px rgba(37, 99, 235, 0.25);
+    }
+
+    .a4-paper.waiting-for-tap {
+      box-shadow: 0 0 0 4px var(--coral-accent), 0 20px 40px rgba(244, 63, 94, 0.3);
+      cursor: crosshair;
+    }
+
+    .margin-guideline {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      border: 1.5px dashed #93c5fd;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 5;
+      display: block;
+    }
+
+    .margin-guideline.hidden {
+      display: none;
+    }
+
+    .margin-tag {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #60a5fa;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    .paper-footer-tag {
+      position: absolute;
+      bottom: 8px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #94a3b8;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 4px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* PLACED ELEMENTS & IN-DOCUMENT INPUTS */
+    .placed-element {
+      position: absolute;
+      cursor: move;
+      touch-action: none;
+      z-index: 10;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .placed-element:hover {
+      border-color: #93c5fd;
+    }
+
+    .placed-element.is-selected {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25), 0 8px 24px rgba(0, 0, 0, 0.12);
+      z-index: 25;
+    }
+
+    .placed-element.is-overlapping {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+      animation: pulseWarning 1.2s infinite;
+    }
+
+    .placed-element.out-of-bounds {
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3) !important;
+    }
+
+    @keyframes pulseWarning {
+      0%, 100% { border-color: #ef4444; }
+      50% { border-color: #fca5a5; }
+    }
+
+    /* FLOATING MINI-CONTROLS FOR SELECTED ELEMENT */
+    .element-control-dock {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      background: rgba(15, 23, 42, 0.92);
+      color: white;
+      border-radius: 7px;
+      padding: 2px 6px;
+      display: none;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+      z-index: 50;
+      white-space: nowrap;
+    }
+
+    .placed-element.is-selected .element-control-dock {
+      display: flex;
+    }
+
+    .dock-btn {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      padding: 2px 5px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .dock-btn:hover {
+      background: #334155;
+      color: white;
+    }
+
+    .dock-btn-danger:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    /* IN-DOCUMENT TYPING HELPER & INPUT BOXES */
+    .typing-guide-banner {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 3px 7px;
+      border-radius: 5px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
+    }
+
+    .guide-label {
+      font-size: 0.68rem;
+      color: #475569;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .guide-target-word {
+      color: #1d4ed8;
+      background: #eff6ff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+    }
+
+    .input-field-doc {
+      width: 100%;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .input-field-doc:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+    .input-field-doc.is-valid {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    /* ==========================================================================
+       CLEAN & ELEGANT IN-DOCUMENT COMPONENT STYLES (NO OVERFLOW)
+       ========================================================================== */
+    .doc-text-block,
+    .doc-table-block,
+    .doc-image-block,
+    .doc-flowchart-block {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 5px 8px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .doc-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 3px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .badge-word { background: #dbeafe; color: #1e40af; }
+    .badge-excel { background: #d1fae5; color: #065f46; }
+    .badge-snip { background: #fef3c7; color: #92400e; }
+    .badge-shapes { background: #ede9fe; color: #6b21a8; }
+
+    .guide-hint {
+      font-size: 0.60rem;
+      color: #64748b;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+
+    .doc-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      margin-bottom: 2px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .field-name {
+      font-size: 0.63rem;
+      font-weight: 700;
+      color: #334155;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .field-target-hint {
+      font-size: 0.61rem;
+      color: #1d4ed8;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 380px;
+      box-sizing: border-box;
+      flex-shrink: 1;
+    }
+
+    .field-target-hint strong {
+      font-weight: 800;
+      color: #1e40af;
+    }
+
+    .input-field-doc {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.15s;
+      font-family: inherit;
+      height: 23px;
+    }
+
+    .input-field-doc:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+    .input-field-doc.is-valid {
+      border-color: #10b981 !important;
+      background: #f0fdf4 !important;
+    }
+
+    /* TABLE */
+    .interactive-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.64rem;
+      box-sizing: border-box;
+      margin-top: 1px;
+    }
+
+    .interactive-table th {
+      background: #107c41;
+      color: #ffffff;
+      font-weight: 700;
+      padding: 2px 4px;
+      text-align: center;
+      border: 1px solid #0b6131;
+      font-size: 0.62rem;
+    }
+
+    .interactive-table td {
+      padding: 1px;
+      border: 1px solid #cbd5e1;
+      text-align: center;
+      background: #ffffff;
+      vertical-align: middle;
+    }
+
+    .table-cell-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 1px 2px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .cell-guide-text {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-size: 0.58rem;
+      box-sizing: border-box;
+      line-height: 1.15;
+      transition: all 0.15s;
+    }
+
+    .cell-guide-label {
+      color: #64748b;
+      font-weight: 600;
+      font-size: 0.55rem;
+      flex-shrink: 0;
+    }
+
+    .cell-guide-val {
+      color: #1e40af;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    .cell-guide-text.is-match {
+      background: #ecfdf5 !important;
+      border-color: #a7f3d0 !important;
+    }
+
+    .cell-guide-text.is-match .cell-guide-label {
+      color: #059669 !important;
+    }
+
+    .cell-guide-text.is-match .cell-guide-val {
+      color: #065f46 !important;
+    }
+
+    .table-cell-input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-size: 0.67rem;
+      font-weight: 700;
+      color: #1e293b;
+      outline: none;
+      text-align: center;
+      background: #ffffff;
+      font-family: inherit;
+      height: 21px;
+    }
+
+    .table-cell-input:focus {
+      border-color: var(--excel-green);
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(16, 124, 65, 0.15);
+    }
+
+    .table-cell-input.is-valid {
+      border-color: #10b981 !important;
+      background: #f0fdf4 !important;
+      color: #065f46 !important;
+    }
+
+    /* IMAGE / SCREENSHOT */
+    .image-preview-frame {
+      width: 100%;
+      height: 66px !important;
+      max-height: 66px !important;
+      background: #0f172a;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    .image-preview-frame svg {
+      width: 100%;
+      height: 100%;
+      max-height: 66px;
+      object-fit: contain;
+    }
+
+    /* FLOWCHART SHAPES */
+    .flowchart-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3px;
+      width: 100%;
+      margin-top: 2px;
+      box-sizing: border-box;
+    }
+
+    .flow-box-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 2px 3px;
+      box-sizing: border-box;
+    }
+
+    .flow-step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 2px;
+      margin-bottom: 1px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .step-num-tag {
+      font-size: 0.55rem;
+      font-weight: 800;
+      color: var(--flow-purple);
+      background: #ede9fe;
+      padding: 1px 3px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .flow-guide-hint {
+      font-size: 0.58rem;
+      color: #6b21a8;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 78px;
+    }
+
+    .flow-input-box {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 3px;
+      padding: 1px 3px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      color: #1e293b;
+      text-align: center;
+      outline: none;
+      background: #ffffff;
+      font-family: inherit;
+      height: 21px;
+    }
+
+    .flow-input-box:focus {
+      border-color: var(--flow-purple);
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+    }
+
+    .flow-input-box.is-valid {
+      border-color: #10b981 !important;
+      background: #f0fdf4 !important;
+      color: #065f46 !important;
+    }
+
+    .flow-arrow {
+      color: var(--flow-purple);
+      font-size: 0.78rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* RIGHT SIDEBAR: MASCOT & LIVE INSPECTOR */
+    .sidebar-inspector {
+      width: 295px;
+      min-width: 295px;
+      max-width: 295px;
+      background: white;
+      border-left: 2px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+      transition: transform 0.3s ease;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .mascot-card {
+      background: linear-gradient(135deg, #eff6ff 0%, #ede9fe 100%);
+      padding: 6px 8px;
+      border-bottom: 1.5px solid #e2e8f0;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .mascot-svg-wrap {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      background: white;
+      border-radius: 50%;
+      border: 2px solid #3b82f6;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .mascot-speech-bubble {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 5px 8px;
+      font-size: 0.71rem;
+      color: #1e293b;
+      line-height: 1.3;
+      position: relative;
+      flex: 1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .mascot-speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: -7px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-right: 7px solid #cbd5e1;
+    }
+
+    .mascot-speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: -5px;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-right: 6px solid white;
+    }
+
+    .mascot-name-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--primary-blue);
+      margin-bottom: 1px;
+    }
+
+    /* SCORING & CHECKLIST PANEL */
+    .inspector-body {
+      flex: 1;
+      padding: 8px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-height: 0;
+    }
+
+    .score-summary-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .score-stars {
+      font-size: 1.2rem;
+      margin-bottom: 1px;
+      letter-spacing: 2px;
+    }
+
+    .score-number {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--primary-blue);
+      line-height: 1;
+    }
+
+    .score-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    .score-badge-pill {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .badge-gold { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
+    .badge-silver { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+    .badge-bronze { background: #ffedd5; color: #c2410c; border: 1px solid #fdba74; }
+
+    /* CRITERIA CHECKLIST */
+    .rubric-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .rubric-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      padding: 4px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 0.69rem;
+    }
+
+    .rubric-item.passed {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+
+    .rubric-item.failed {
+      border-color: #fca5a5;
+      background: #fef2f2;
+    }
+
+    .rubric-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .rubric-status-icon {
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+
+    .rubric-title {
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .rubric-pts {
+      font-weight: 800;
+      font-size: 0.68rem;
+      color: #64748b;
+    }
+
+    /* FEEDBACK LIST */
+    .feedback-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 6px 8px;
+      max-height: 85px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .feedback-box h4 {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #92400e;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .feedback-items {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .feedback-items li {
+      font-size: 0.68rem;
+      color: #78350f;
+      line-height: 1.3;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .feedback-items li::before {
+      content: '👉';
+      flex-shrink: 0;
+    }
+
+    /* BOTTOM ACTIONS IN INSPECTOR */
+    .inspector-actions {
+      padding: 8px;
+      border-top: 1.5px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: #f8fafc;
+      flex-shrink: 0;
+    }
+
+    /* MODAL POPUPS */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 16px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 12px 16px;
+      border-bottom: 1.5px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .modal-header h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: #64748b;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-close-btn:hover {
+      color: #0f172a;
+    }
+
+    .modal-body {
+      padding: 14px 16px;
+      font-size: 0.8rem;
+      color: #334155;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .timer-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .preset-btn {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 0.84rem;
+      color: #1e293b;
+      transition: all 0.15s;
+    }
+
+    .preset-btn:hover {
+      border-color: var(--primary-blue);
+      background: #eff6ff;
+    }
+
+    .preset-btn.active {
+      border-color: var(--primary-blue);
+      background: #dbeafe;
+      color: var(--primary-blue-dark);
+    }
+
+    .form-input {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-blue);
+    }
+
+    .modal-footer {
+      padding: 10px 16px;
+      border-top: 1.5px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      background: #f8fafc;
+      border-radius: 0 0 16px 16px;
+    }
+
+    /* TOAST PILL */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(15, 23, 42, 0.94);
+      color: white;
+      padding: 7px 16px;
+      border-radius: 30px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 300;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .toast-pill.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* MOBILE BOTTOM TAB NAVIGATION */
+    .mobile-tab-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: white;
+      border-top: 2px solid #e2e8f0;
+      z-index: 90;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .mobile-tab-btn {
+      flex: 1;
+      height: 100%;
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+    }
+
+    .mobile-tab-btn.active {
+      color: var(--primary-blue);
+      background: #f0f7ff;
+    }
+
+    .mobile-tab-btn .tab-icon {
+      font-size: 1.1rem;
+    }
+
+    /* MEDIA QUERIES */
+    @media (max-width: 900px) {
+      .app-container {
+        position: relative;
+      }
+      .sidebar-inspector {
+        position: fixed;
+        right: 0;
+        top: 50px;
+        bottom: 50px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+      }
+      .sidebar-inspector.mobile-open {
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .brand-text p {
+        display: none;
+      }
+      .theme-selector-label {
+        display: none;
+      }
+      .toolbox-panel {
+        position: fixed;
+        left: 0;
+        top: 50px;
+        bottom: 50px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+      }
+      .toolbox-panel.mobile-open {
+        transform: translateX(0);
+      }
+      .canvas-viewport {
+        padding: 6px 4px 56px 4px;
+      }
+      .mobile-tab-nav {
+        display: flex;
+      }
+    }
+
+    /* ==========================================================================
+       PRINT MEDIA STYLES - CLEAN REPORT OUTPUT ONLY
+       ========================================================================== */
+    @media screen {
+      #printContainer {
+        display: none !important;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: 'Times New Roman', Times, 'Segoe UI', Arial, sans-serif !important;
+      }
+
+      /* HIDE ENTIRE APP INTERFACE */
+      header,
+      .app-container,
+      .mobile-tab-nav,
+      .modal-backdrop,
+      .toast-pill,
+      #exportCanvas {
+        display: none !important;
+        visibility: hidden !important;
+      }
+
+      /* SHOW EXCLUSIVELY THE PRINT CONTAINER */
+      #printContainer {
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+        color: #111827 !important;
+      }
+
+      #printContainer * {
+        visibility: visible !important;
+      }
+
+      .print-header {
+        text-align: center;
+        margin-bottom: 12px;
+      }
+
+      .print-school-title {
+        font-size: 13pt;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #0f172a;
+      }
+
+      .print-school-sub {
+        font-size: 8.5pt;
+        color: #475569;
+        margin-top: 2px;
+      }
+
+      .print-header-line {
+        border-bottom: 2px solid #0f172a;
+        border-top: 1px solid #0f172a;
+        height: 3px;
+        margin-top: 6px;
+        margin-bottom: 12px;
+      }
+
+      .print-section {
+        margin-bottom: 10px;
+        page-break-inside: avoid;
+      }
+
+      .print-title {
+        font-size: 13.5pt;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3px;
+        color: #0f172a;
+      }
+
+      .print-author {
+        font-size: 9pt;
+        font-style: italic;
+        text-align: center;
+        color: #475569;
+        margin-bottom: 8px;
+      }
+
+      .print-intro {
+        font-size: 9.5pt;
+        line-height: 1.4;
+        text-align: justify;
+        color: #1f2937;
+        margin-bottom: 8px;
+      }
+
+      .print-caption {
+        font-size: 9pt;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #0f172a;
+      }
+
+      .print-caption-center {
+        font-size: 8.5pt;
+        font-style: italic;
+        text-align: center;
+        margin-top: 4px;
+        color: #475569;
+      }
+
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8.5pt;
+        margin-bottom: 4px;
+      }
+
+      .print-table th {
+        background: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border: 1px solid #475569;
+        padding: 5px 6px;
+        font-weight: 700;
+        text-align: center;
+        color: #0f172a;
+      }
+
+      .print-table td {
+        border: 1px solid #64748b;
+        padding: 4px 6px;
+        color: #1f2937;
+      }
+
+      .print-image-frame {
+        width: 100%;
+        max-height: 125px;
+        border: 1px solid #94a3b8;
+        border-radius: 4px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0f172a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 6px;
+      }
+
+      .print-image-frame svg {
+        max-height: 115px;
+        width: auto;
+      }
+
+      .print-flow-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        width: 100%;
+        margin-top: 4px;
+      }
+
+      .print-flow-box {
+        flex: 1;
+        border: 1.5px solid #4c1d95;
+        border-radius: 4px;
+        padding: 4px 2px;
+        text-align: center;
+        font-size: 8pt;
+        font-weight: 700;
+        background: #f5f3ff !important;
+        color: #3b0764;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .print-flow-arrow {
+        font-size: 11pt;
+        font-weight: 800;
+        color: #581c87;
+        flex-shrink: 0;
+      }
+
+      .print-footer {
+        margin-top: 12px;
+        page-break-inside: avoid;
+      }
+
+      .print-footer-line {
+        border-top: 1px solid #94a3b8;
+        margin-bottom: 4px;
+      }
+
+      .print-footer-content {
+        display: flex;
+        justify-content: space-between;
+        font-size: 7.5pt;
+        color: #64748b;
+      }
+    }
+  
+    </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP HEADER NAVIGATION & TIMER CONTROLS
+       ======================================================================== -->
+  <header>
+    <div class="brand-group">
+      <div class="brand-logo-badge">🖥️</div>
+      <div class="brand-text">
+        <h1>Studio Laporan Digital</h1>
+        <p>Informatika Kelas VIII • Tata Letak & Laporan Komputer</p>
+      </div>
+    </div>
+
+    <!-- Timer Countdown & Customizer -->
+    <div class="timer-widget">
+      <span style="font-size: 1.1rem;">⏱️</span>
+      <div class="timer-display" id="timerDisplay">03:00</div>
+      <div class="timer-controls">
+        <button class="timer-btn" id="btnTimerToggle" title="Jeda / Lanjutkan Waktu">⏸️</button>
+        <button class="timer-btn" id="btnOpenTimerModal" title="Ubah Durasi Waktu">⚙️ Atur</button>
+      </div>
+    </div>
+
+    <!-- Pilihan Materi Informatika Dasar -->
+    <div class="theme-selector-wrap">
+      <span class="theme-selector-label">💻 Materi:</span>
+      <select id="themeSelect" class="theme-select" title="Pilih topik materi informatika dasar">
+        <option value="hardware">🖥️ Perangkat Keras Komputer (Hardware)</option>
+        <option value="jaringan">🌐 Jaringan Komputer dan Internet</option>
+        <option value="keamanan">🔒 Keamanan Akun Digital Pribadi</option>
+        <option value="software">💻 Perangkat Lunak & Sistem Operasi</option>
+        <option value="algoritma">🧩 Algoritma & Pemrograman Dasar</option>
+      </select>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div class="header-actions">
+      <button id="btnInstallPwa" class="btn btn-warning" onclick="installPwaApp()" style="display:none;" title="Pasang aplikasi ke laptop/HP agar bisa dibuka secara offline">
+        <span>📲</span> <span>Pasang Offline</span>
+      </button>
+      <button id="btnHelp" class="btn btn-outline" title="Petunjuk Bermain">
+        <span>📖</span> <span>Petunjuk</span>
+      </button>
+      <button id="btnExample" class="btn btn-purple" title="Lihat Contoh Tata Letak Ideal">
+        <span>💡</span> <span>Contoh</span>
+      </button>
+      <button id="btnReset" class="btn btn-outline" title="Mulai Ulang Rancangan">
+        <span>🔄</span> <span>Ulang</span>
+      </button>
+      <button id="btnAudioToggle" class="btn btn-outline btn-icon-only" title="Suara Efek (Aktif/Nonaktif)">
+        🔊
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN APP WORKSPACE
+       ======================================================================== -->
+  <div class="app-container">
+
+    <!-- 1. LEFT TOOLBOX PANEL -->
+    <aside class="toolbox-panel" id="toolboxPanel">
+      <div class="panel-header">
+        <h2><span>🧰</span> Panel Elemen</h2>
+        <span class="badge-pill" id="elementCountBadge">0 / 4 Ditaruh</span>
+      </div>
+
+      <div class="toolbox-instruction">
+        <span>💡</span>
+        <span><b>Seret atau ketuk (+)</b> ke kertas A4, lalu <b>ketik teks panduan</b> yang sudah disediakan di atas setiap kolom!</span>
+      </div>
+
+      <!-- Mode Tap Notice -->
+      <div class="tap-mode-notice" id="tapModeNotice">
+        <span>🎯 Mode Tap Aktif: Ketuk area kertas A4 untuk meletakkan!</span>
+        <button onclick="cancelTapMode()" style="background:none;border:none;color:#9f1239;font-weight:800;cursor:pointer;">✖</button>
+      </div>
+
+      <div class="toolbox-elements" id="toolboxElements">
+        
+        <!-- Elemen 1: Blok Judul & Teks (Word) -->
+        <div class="element-card" id="card-title" draggable="true" data-type="title">
+          <div class="card-top">
+            <div class="card-title-group">
+              <div class="app-icon-badge icon-word">W</div>
+              <span class="card-name">1. Judul & Teks Laporan</span>
+            </div>
+            <span class="card-status-badge status-ready" id="status-title">Siap Ditaruh</span>
+          </div>
+          <p class="card-desc">Ketik judul laporan, nama penulis, kelas, dan pengantar ringkas komputer.</p>
+          <div class="card-actions">
+            <button class="card-btn card-btn-add" onclick="placeElementFromPalette('title')" title="Taruh langsung di posisi standar">
+              <span>➕ Taruh</span>
+            </button>
+            <button class="card-btn card-btn-tap" onclick="startTapMode('title')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
+              <span>🎯 Tap Letak</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Elemen 2: Tabel Data (Excel) -->
+        <div class="element-card" id="card-table" draggable="true" data-type="table">
+          <div class="card-top">
+            <div class="card-title-group">
+              <div class="app-icon-badge icon-excel">X</div>
+              <span class="card-name">2. Tabel Data Excel</span>
+            </div>
+            <span class="card-status-badge status-ready" id="status-table">Siap Ditaruh</span>
+          </div>
+          <p class="card-desc">Ketik judul tabel dan lengkapi 4 baris data tabel perangkat atau jaringan.</p>
+          <div class="card-actions">
+            <button class="card-btn card-btn-add" onclick="placeElementFromPalette('table')" title="Taruh langsung di posisi standar">
+              <span>➕ Taruh</span>
+            </button>
+            <button class="card-btn card-btn-tap" onclick="startTapMode('table')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
+              <span>🎯 Tap Letak</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Elemen 3: Screenshot Snipping Tool -->
+        <div class="element-card" id="card-image" draggable="true" data-type="image">
+          <div class="card-top">
+            <div class="card-title-group">
+              <div class="app-icon-badge icon-snip">✂️</div>
+              <span class="card-name">3. Tangkapan Layar Gambar</span>
+            </div>
+            <span class="card-status-badge status-ready" id="status-image">Siap Ditaruh</span>
+          </div>
+          <p class="card-desc">Tangkapan layar diagram komputer atau jaringan. Ketik keterangan gambarnya!</p>
+          <div class="card-actions">
+            <button class="card-btn card-btn-add" onclick="placeElementFromPalette('image')" title="Taruh langsung di posisi standar">
+              <span>➕ Taruh</span>
+            </button>
+            <button class="card-btn card-btn-tap" onclick="startTapMode('image')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
+              <span>🎯 Tap Letak</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Elemen 4: Diagram Alur Shapes -->
+        <div class="element-card" id="card-flowchart" draggable="true" data-type="flowchart">
+          <div class="card-top">
+            <div class="card-title-group">
+              <div class="app-icon-badge icon-shapes">🔀</div>
+              <span class="card-name">4. Diagram Alur (Shapes)</span>
+            </div>
+            <span class="card-status-badge status-ready" id="status-flowchart">Siap Ditaruh</span>
+          </div>
+          <p class="card-desc">Bagan alur 4 langkah kerja komputer berurutan. Ketik setiap kotak langkahnya!</p>
+          <div class="card-actions">
+            <button class="card-btn card-btn-add" onclick="placeElementFromPalette('flowchart')" title="Taruh langsung di posisi standar">
+              <span>➕ Taruh</span>
+            </button>
+            <button class="card-btn card-btn-tap" onclick="startTapMode('flowchart')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
+              <span>🎯 Tap Letak</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- 2. CENTER WORKSPACE: A4 PAPER CANVAS -->
+    <main class="canvas-viewport" id="canvasViewport">
+      
+      <!-- Top floating canvas tool controls -->
+      <div class="canvas-toolbar" id="canvasToolbar">
+        <div class="canvas-tool-group">
+          <button class="canvas-tool-btn active" id="btnToggleMargin" title="Tampilkan/Sembunyikan Garis Batas Margin Kertas">
+            <span>📏 Margin</span>
+          </button>
+          <button class="canvas-tool-btn" id="btnAutoArrange" title="Rapikan Otomatis Posisi Elemen">
+            <span>✨ Rapikan Posisi</span>
+          </button>
+        </div>
+        <div class="canvas-toolbar-divider"></div>
+        <div class="canvas-tool-group zoom-tool-group">
+          <button class="canvas-tool-btn" id="btnZoomOut" title="Perkecil Tampilan Kertas">➖</button>
+          <button class="canvas-tool-btn" id="btnZoomFit" title="Pas Layar (Seluruh Kertas Tampak Penuh)">
+            <span>🎯 Pas Layar</span>
+          </button>
+          <button class="canvas-tool-btn active" id="btnZoom100" title="Ukuran Asli 100% (Bawaan)">
+            <span id="zoomPercentText">100%</span>
+          </button>
+          <button class="canvas-tool-btn" id="btnZoomIn" title="Perbesar Tampilan Kertas">➕</button>
+        </div>
+      </div>
+
+      <!-- Virtual A4 Paper Wrapper -->
+      <div class="a4-paper-wrapper" id="paperWrapper">
+        <div class="a4-paper" id="a4Paper">
+          
+          <!-- Visual Margin Guidelines (24px padding border) -->
+          <div class="margin-guideline" id="marginGuide">
+            <span class="margin-tag">Area Aman Margin (Batas Cetak)</span>
+          </div>
+
+          <!-- Document Watermark & Footer -->
+          <div class="paper-footer-tag">
+            <span id="paperFooterTheme">Laporan Informatika: Perangkat Keras Komputer • Kelas VIII</span>
+            <span>Halaman 1 dari 1</span>
+          </div>
+
+          <!-- Placed elements with interactive inputs will be dynamically injected here -->
+        </div>
+      </div>
+    </main>
+
+    <!-- 3. RIGHT SIDEBAR: MASCOT, SCORE & INSPECTOR -->
+    <aside class="sidebar-inspector" id="inspectorSidebar">
+      
+      <!-- Mascot Card -->
+      <div class="mascot-card">
+        <div class="mascot-svg-wrap" id="mascotAvatar">
+          <!-- Dynamic Mascot SVG -->
+        </div>
+        <div class="mascot-speech-bubble">
+          <div class="mascot-name-tag">Kiko • Redaksi Informatika</div>
+          <div id="mascotMessage">
+            Halo Sobat Informatika! Letakkan 4 elemen ke kertas A4, lalu <b>ketik teks panduan tanpa simbol rumit</b> sebelum waktu habis! ⏱️
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspector Body: Real-time Evaluation & Scoring -->
+      <div class="inspector-body">
+        
+        <!-- Score Card -->
+        <div class="score-summary-card">
+          <div class="score-stars" id="scoreStars">☆☆☆</div>
+          <div class="score-number" id="scoreNumber">0</div>
+          <div class="score-label">Skor Tata Letak & Pengetikan</div>
+          <div class="score-badge-pill badge-silver" id="scoreBadge">Belum Diperiksa</div>
+        </div>
+
+        <!-- Rubric Checklist -->
+        <div class="rubric-list">
+          <!-- Kriteria 1: Kelengkapan Elemen -->
+          <div class="rubric-item" id="rubric-complete">
+            <div class="rubric-left">
+              <span class="rubric-status-icon" id="icon-complete">⚪</span>
+              <span class="rubric-title">Kelengkapan 4 Elemen</span>
+            </div>
+            <span class="rubric-pts" id="pts-complete">0/20</span>
+          </div>
+
+          <!-- Kriteria 2: Ketik Judul & Identitas -->
+          <div class="rubric-item" id="rubric-typing-title">
+            <div class="rubric-left">
+              <span class="rubric-status-icon" id="icon-typing-title">⚪</span>
+              <span class="rubric-title">Ketik Judul, Nama, Kelas & Pengantar</span>
+            </div>
+            <span class="rubric-pts" id="pts-typing-title">0/15</span>
+          </div>
+
+          <!-- Kriteria 3: Ketik Isi Tabel Excel -->
+          <div class="rubric-item" id="rubric-typing-table">
+            <div class="rubric-left">
+              <span class="rubric-status-icon" id="icon-typing-table">⚪</span>
+              <span class="rubric-title">Ketik Judul & Data Tabel</span>
+            </div>
+            <span class="rubric-pts" id="pts-typing-table">0/20</span>
+          </div>
+
+          <!-- Kriteria 4: Ketik Keterangan Gambar -->
+          <div class="rubric-item" id="rubric-typing-image">
+            <div class="rubric-left">
+              <span class="rubric-status-icon" id="icon-typing-image">⚪</span>
+              <span class="rubric-title">Ketik Keterangan Gambar</span>
+            </div>
+            <span class="rubric-pts" id="pts-typing-image">0/15</span>
+          </div>
+
+          <!-- Kriteria 5: Ketik 4 Kotak Alur Diagram -->
+          <div class="rubric-item" id="rubric-diagram-steps">
+            <div class="rubric-left">
+              <span class="rubric-status-icon" id="icon-diagram-steps">⚪</span>
+              <span class="rubric-title">Ketik 4 Kotak Alur Diagram</span>
+            </div>
+            <span class="rubric-pts" id="pts-diagram-steps">0/15</span>
+          </div>
+
+          <!-- Kriteria 6: Kerapian Tata Letak & Margin -->
+          <div class="rubric-item" id="rubric-layout">
+            <div class="rubric-left">
+              <span class="rubric-status-icon" id="icon-layout">⚪</span>
+              <span class="rubric-title">Tata Letak, Margin & Jarak</span>
+            </div>
+            <span class="rubric-pts" id="pts-layout">0/15</span>
+          </div>
+        </div>
+
+        <!-- Saran & Catatan Kiko -->
+        <div class="feedback-box">
+          <h4><span>💡</span> Saran Perbaikan:</h4>
+          <ul class="feedback-items" id="feedbackList">
+            <li>Tarik elemen ke kertas A4 dan ketik teks sesuai panduan yang tertera.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="inspector-actions">
+        <button id="btnCheckLayout" class="btn btn-primary" style="padding: 12px; font-size: 0.95rem;">
+          <span>🎯</span> <span>Periksa & Kumpulkan</span>
+        </button>
+        <button id="btnDownloadReport" class="btn btn-success" style="padding: 10px;">
+          <span>📥</span> <span>Unduh Rancanganku (PNG)</span>
+        </button>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- Mobile Bottom Tab Navigation -->
+  <nav class="mobile-tab-nav">
+    <button class="mobile-tab-btn" id="mTabPalette" onclick="toggleMobileTab('palette')">
+      <span class="tab-icon">🧰</span>
+      <span>Elemen</span>
+    </button>
+    <button class="mobile-tab-btn active" id="mTabCanvas" onclick="toggleMobileTab('canvas')">
+      <span class="tab-icon">📄</span>
+      <span>Kertas A4</span>
+    </button>
+    <button class="mobile-tab-btn" id="mTabInspector" onclick="toggleMobileTab('inspector')">
+      <span class="tab-icon">🎯</span>
+      <span>Penilaian</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================
+       MODALS
+       ======================================================================== -->
+
+  
+  <!-- 0. MODAL MULAI TANTANGAN (WELCOME, ACAK MATERI & ATUR WAKTU) -->
+  <div class="modal-backdrop active" id="modalWelcome">
+    <div class="modal-card" style="max-width: 480px; text-align: center;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #eff6ff, #f3e8ff); justify-content: center; padding: 12px 16px;">
+        <h3 style="color: #1e3a8a; font-size: 1.05rem;">
+          <span>🚀</span> Studio Laporan Digital: Tantangan Siswa
+        </h3>
+      </div>
+      <div class="modal-body" style="padding: 14px 18px; gap: 12px;">
+        
+        <p style="font-size: 0.8rem; color: #475569; line-height: 1.35; margin-bottom: 2px;">
+          Selamat datang di simulator Informatika Kelas VIII! Rancang tata letak dokumen laporanmu dengan mengintegrasikan Word, Excel, Snipping Tool, dan Shapes.
+        </p>
+
+        <!-- KOTAK MATERI ACAK -->
+        <div style="background: #f8fafc; border: 2px solid #93c5fd; border-radius: 12px; padding: 10px; text-align: left;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.5px;">
+              🎲 Materi yang Didapatkan (Acak):
+            </span>
+            <button type="button" class="btn btn-outline" onclick="rollRandomTheme()" style="padding: 3px 8px; font-size: 0.68rem;" title="Acak materi lain">
+              🔄 Acak Lagi
+            </button>
+          </div>
+          
+          <div id="welcomeThemeCard" style="display: flex; align-items: center; gap: 10px; background: white; padding: 10px; border-radius: 8px; border: 1.5px solid #cbd5e1;">
+            <div id="welcomeThemeIcon" style="font-size: 2.2rem; flex-shrink: 0;">🖥️</div>
+            <div>
+              <div id="welcomeThemeTitle" style="font-size: 0.92rem; font-weight: 800; color: #0f172a;">Perangkat Keras Komputer (Hardware)</div>
+              <div id="welcomeThemeDesc" style="font-size: 0.7rem; color: #64748b; line-height: 1.3; margin-top: 2px;">Menyusun laporan tentang komponen CPU, RAM DDR4, SSD, Monitor, dan alur pemrosesan data (IPO).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KOTAK ATUR WAKTU -->
+        <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px; text-align: left;">
+          <label style="font-size: 0.74rem; font-weight: 800; color: #334155; display: block; margin-bottom: 6px;">
+            ⏱️ Atur Batas Waktu Permainan:
+          </label>
+          
+          <div class="timer-presets-grid" style="grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+            <button type="button" class="preset-btn" onclick="selectWelcomePreset(60, this)">
+              <span>⚡ 1 Menit</span>
+            </button>
+            <button type="button" class="preset-btn" onclick="selectWelcomePreset(120, this)">
+              <span>🚀 2 Menit</span>
+            </button>
+            <button type="button" class="preset-btn active" onclick="selectWelcomePreset(180, this)">
+              <span>⏱️ 3 Menit</span>
+            </button>
+            <button type="button" class="preset-btn" onclick="selectWelcomePreset(300, this)">
+              <span>🎯 5 Menit</span>
+            </button>
+            <button type="button" class="preset-btn" style="grid-column: span 2;" onclick="selectWelcomePreset(0, this)">
+              <span>♾️ Tanpa Batas Waktu</span>
+            </button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+            <span style="font-size: 0.72rem; font-weight: 700; color: #475569;">Atur Custom:</span>
+            <input type="number" id="welcomeMinutesInput" class="form-input" min="1" max="60" value="3" style="width: 55px; text-align: center; font-weight: 700;">
+            <span style="font-size: 0.72rem; font-weight: 700;">Menit</span>
+            <input type="number" id="welcomeSecondsInput" class="form-input" min="0" max="59" value="0" style="width: 55px; text-align: center; font-weight: 700;">
+            <span style="font-size: 0.72rem; font-weight: 700;">Detik</span>
+          </div>
+        </div>
+
+        <!-- TOMBOL MULAI -->
+        <button id="btnStartGame" type="button" class="btn btn-primary" onclick="startChallengeFromWelcome()" style="padding: 12px; font-size: 0.95rem; width: 100%; border-radius: 10px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);">
+          <span>🚀</span> <span>MULAI TANTANGAN SEKARANG</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. MODAL ATUR WAKTU -->
+  <div class="modal-backdrop" id="modalTimer">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3><span>⏱️</span> Atur Durasi Waktu Permainan</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalTimer')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Pilih atau sesuaikan batas waktu permainan untuk melatih kecepatan merancang dan mengetik laporan informatika:</p>
+        
+        <div class="timer-presets-grid">
+          <button class="preset-btn" onclick="setTimerPreset(60, this)">
+            <span>⚡ 1 Menit</span>
+            <small style="color:#64748b;display:block;">Tantangan Kilat</small>
+          </button>
+          <button class="preset-btn" onclick="setTimerPreset(120, this)">
+            <span>🚀 2 Menit</span>
+            <small style="color:#64748b;display:block;">Cepat & Gesit</small>
+          </button>
+          <button class="preset-btn active" onclick="setTimerPreset(180, this)">
+            <span>⏱️ 3 Menit</span>
+            <small style="color:#64748b;display:block;">Standar Latihan</small>
+          </button>
+          <button class="preset-btn" onclick="setTimerPreset(300, this)">
+            <span>🎯 5 Menit</span>
+            <small style="color:#64748b;display:block;">Santai & Teliti</small>
+          </button>
+          <button class="preset-btn" style="grid-column: span 2;" onclick="setTimerPreset(0, this)">
+            <span>♾️ Tanpa Batas Waktu</span>
+            <small style="color:#64748b;display:block;">Eksplorasi bebas tanpa hitung mundur</small>
+          </button>
+        </div>
+
+        <div style="border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 4px;">
+          <label style="font-size:0.75rem; font-weight:800; color:#334155;">Atur Waktu Khusus (Custom):</label>
+          <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+            <input type="number" id="customMinutesInput" class="form-input" min="1" max="60" value="3" style="width:70px; text-align:center;">
+            <span style="font-size:0.8rem; font-weight:700;">Menit</span>
+            <input type="number" id="customSecondsInput" class="form-input" min="0" max="59" value="0" style="width:70px; text-align:center;">
+            <span style="font-size:0.8rem; font-weight:700;">Detik</span>
+            <button class="btn btn-primary" onclick="applyCustomTimeInput()" style="margin-left:auto;">Terapkan</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalTimer')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MODAL PETUNJUK BERMAIN -->
+  <div class="modal-backdrop" id="modalHelp">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><span>📖</span> Petunjuk Studio Laporan Digital</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalHelp')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><b>Selamat datang di Studio Laporan Informatika!</b> Tugasmu adalah menyusun laporan teknologi komputer di atas kertas A4 dan mengetikkan teksnya dengan mudah tanpa perlu tombol Shift atau simbol rumit:</p>
+        
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; border-left: 4px solid var(--primary-blue);">
+          <b>4 Bagian Dokumen yang Harus Diletakkan & Diketik:</b>
+          <ul style="margin-left: 20px; margin-top: 6px; font-size: 0.8rem; display:flex; flex-direction:column; gap:4px;">
+            <li><b>📄 Dokumen Word:</b> Ketik judul dan nama kelompok (contoh teks panduan tertera di atas kolom).</li>
+            <li><b>📊 Tabel Excel:</b> Ketik judul tabel dan lengkapi 4 baris data perangkat komputer.</li>
+            <li><b>✂️ Tangkapan Layar:</b> Ketik keterangan gambar diagram komputer.</li>
+            <li><b>🔀 Diagram Alur Shapes:</b> Ketik 4 langkah alur kerja pemrosesan data komputer.</li>
+          </ul>
+        </div>
+
+        <p><b>Mudah & Bebas Simbol:</b></p>
+        <p style="font-size: 0.8rem; color: #475569;">Semua kata yang harus diketik menggunakan kata-kata bahasa Indonesia biasa dan angka tanpa simbol rumit seperti titik dua, tanda seru, atau kurung. Ikuti petunjuk <b>👉 Ketik</b> yang ada di setiap bagian elemen!</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal('modalHelp')">Siap, Mulai Latihan! 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MODAL CONTOH TATA LETAK IDEAL -->
+  <div class="modal-backdrop" id="modalExample">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3><span>💡</span> Contoh Tata Letak Dokumen Informatika Ideal</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalExample')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Lihatlah contoh susunan laporan teknologi informatika yang rapi, berjarak proporsional, dan terketik lengkap:</p>
+        
+        <div style="background: white; border: 2px solid #cbd5e1; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          
+          <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 6px; padding: 8px; text-align: center;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #1e40af;">[BAGIAN ATAS] JUDUL LAPORAN & NAMA KELOMPOK</div>
+            <div style="font-size: 0.62rem; color: #64748b;">Pengantar Ringkas Informatika</div>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <div style="flex: 1; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 6px; padding: 10px 6px; text-align: center;">
+              <div style="font-size: 0.68rem; font-weight: 800; color: #065f46;">📊 TABEL DATA (EXCEL)</div>
+              <div style="font-size: 0.58rem; color: #047857; margin-top: 3px;">Tabel 5 Baris Data Terisi Lengkap</div>
+            </div>
+            <div style="flex: 1; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 6px; padding: 10px 6px; text-align: center;">
+              <div style="font-size: 0.68rem; font-weight: 800; color: #b45309;">✂️ GAMBAR SCREENSHOT</div>
+              <div style="font-size: 0.58rem; color: #92400e; margin-top: 3px;">Keterangan Gambar Diagram</div>
+            </div>
+          </div>
+
+          <div style="background: #faf5ff; border: 1.5px solid #e9d5ff; border-radius: 6px; padding: 8px; text-align: center;">
+            <div style="font-size: 0.68rem; font-weight: 800; color: #6b21a8; margin-bottom: 4px;">🔀 DIAGRAM ALUR 4 LANGKAH (SHAPES)</div>
+            <div style="display: flex; justify-content: space-around; font-size: 0.58rem; color: #581c87;">
+              <span>Input Data</span> ➔ <span>Proses CPU</span> ➔ <span>Simpan Data</span> ➔ <span>Output Layar</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalExample')">Tutup</button>
+        <button class="btn btn-purple" onclick="applyIdealLayout()">✨ Terapkan Tata Letak Ideal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODAL HASIL AKHIR -->
+  <div class="modal-backdrop" id="modalResult">
+    <div class="modal-card" style="text-align: center; max-width: 480px;">
+      <div class="modal-header" style="justify-content: center;">
+        <h3 style="color: #0f172a;">🏆 Hasil Pemeriksaan Laporan Informatika</h3>
+      </div>
+      <div class="modal-body" style="align-items: center;">
+        
+        <div id="resultBadgeGraphic" style="width: 100px; height: 100px; margin: 0 auto;"></div>
+
+        <h2 id="resultTitle" style="font-size: 1.3rem; font-weight: 900; margin-top: 6px;">Kreator Konten Digital Mahir!</h2>
+        <div id="resultStars" style="font-size: 1.8rem; color: #f59e0b; margin: 3px 0;">⭐⭐⭐</div>
+        <div style="font-size: 2.3rem; font-weight: 900; color: var(--primary-blue);" id="resultScore">95/100</div>
+
+        <p id="resultFeedback" style="font-size: 0.83rem; color: #475569; max-width: 380px;">
+          Luar biasa! Tata letak laporan informatikamu sangat rapi, proporsional, dan seluruh teks terketik dengan lengkap!
+        </p>
+
+        <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 14px; width: 100%; text-align: left; font-size: 0.76rem;">
+          <div style="font-weight: 700; color: #1e293b; margin-bottom: 3px;">📜 Catatan Penilai:</div>
+          <div id="resultNotes" style="color: #64748b; line-height: 1.4;">
+            Semua kriteria terpenuhi dengan baik. Judul, tabel data, tangkapan layar, dan diagram alur terintegrasi secara profesional.
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="justify-content: center; gap: 8px;">
+        <button class="btn btn-outline" onclick="closeModal('modalResult')">Perbaiki Lagi ✏️</button>
+        <button class="btn btn-success" onclick="downloadReportImage()">Unduh Rancanganku 📥</button>
+        <button class="btn btn-primary" onclick="printReport()">Cetak Dokumen 🖨️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Pill -->
+  <div class="toast-pill" id="toastPill">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">Pesan Notifikasi</span>
+  </div>
+
+  <!-- Hidden canvas for PNG export -->
+  <canvas id="exportCanvas" style="display: none;"></canvas>
+
+  <!-- ========================================================================
+       JAVASCRIPT: ENGINE SIMULASI, PENGETIKAN MUDAH & TIMER
+       ======================================================================== -->
+  <script>
+    /* ==========================================================================
+       DATA TEMA INFORMATIKA DASAR (BEBAS SIMBOL / SHIFT)
+       Kata-kata sederhana, huruf dan angka saja, tanpa titik dua / kurung rumit
+       ========================================================================== */
+    const THEMES = {
+      hardware: {
+        id: 'hardware',
+        name: 'Perangkat Keras Komputer (Hardware)',
+        footerText: 'Laporan Informatika: Perangkat Keras Komputer • Kelas VIII',
+        targets: {
+          title: 'Laporan Hardware Komputer',
+          author: 'Andi Pratama',
+          classGrade: 'Kelas Delapan A',
+          intro: 'Komputer Mengolah Data Digital',
+          tableCaption: 'Tabel Komponen Komputer',
+          tableRows: [
+            { col1: 'Prosesor CPU', col2: 'Otak Komputer' },
+            { col1: 'Memori RAM', col2: 'Simpan Sementara' },
+            { col1: 'Penyimpan SSD', col2: 'Simpan Berkas' },
+            { col1: 'Layar Monitor', col2: 'Tampilan Visual' },
+            { col1: 'Papan Tik Mouse', col2: 'Alat Masukan' }
+          ],
+          imageCaption: 'Gambar Bagian Komputer',
+          imageAnalysis: 'Perangkat komputer terpasang rapi',
+          flowchartCaption: 'Bagan Alur Kerja Komputer',
+          flowchartSteps: [
+            'Input Data',
+            'Proses CPU',
+            'Simpan Data',
+            'Output Layar'
+          ],
+          flowchartSummary: 'Data diolah menjadi informasi'
+        },
+        svgType: 'hardware'
+      },
+      jaringan: {
+        id: 'jaringan',
+        name: 'Jaringan Komputer dan Internet',
+        footerText: 'Laporan Informatika: Jaringan Komputer • Kelas VIII',
+        targets: {
+          title: 'Laporan Jaringan Komputer',
+          author: 'Budi Santoso',
+          classGrade: 'Kelas Delapan B',
+          intro: 'Jaringan Berbagi Informasi',
+          tableCaption: 'Tabel Kecepatan Internet',
+          tableRows: [
+            { col1: 'Lab Komputer', col2: 'Sangat Cepat' },
+            { col1: 'Perpustakaan', col2: 'Cepat' },
+            { col1: 'Ruang Kelas', col2: 'Sedang' },
+            { col1: 'Kantin Sekolah', col2: 'Cukup' },
+            { col1: 'Ruang Guru', col2: 'Cepat Sekali' }
+          ],
+          imageCaption: 'Gambar Router Wifi',
+          imageAnalysis: 'Sinyal router menyala aktif',
+          flowchartCaption: 'Bagan Alur Kirim Pesan',
+          flowchartSteps: [
+            'Kirim Data',
+            'Lewat Router',
+            'Server Proses',
+            'Pesan Sampai'
+          ],
+          flowchartSummary: 'Paket data terkirim cepat'
+        },
+        svgType: 'network'
+      },
+      keamanan: {
+        id: 'keamanan',
+        name: 'Keamanan Akun Digital Pribadi',
+        footerText: 'Laporan Informatika: Keamanan Akun Digital • Kelas VIII',
+        targets: {
+          title: 'Laporan Keamanan Akun',
+          author: 'Citra Lestari',
+          classGrade: 'Kelas Delapan C',
+          intro: 'Lindungi Data Pribadi Kita',
+          tableCaption: 'Tabel Evaluasi Sandi',
+          tableRows: [
+            { col1: 'Angka Saja', col2: 'Sangat Lemah' },
+            { col1: 'Huruf Saja', col2: 'Lemah' },
+            { col1: 'Campur Huruf', col2: 'Kuat' },
+            { col1: 'Sandi Panjang', col2: 'Sangat Kuat' },
+            { col1: 'Kode Rahasia', col2: 'Paling Aman' }
+          ],
+          imageCaption: 'Gambar Proteksi Akun',
+          imageAnalysis: 'Akun aman terlindungi sandi',
+          flowchartCaption: 'Bagan Lindungi Akun',
+          flowchartSteps: [
+            'Buat Sandi',
+            'Pasang Kode',
+            'Simpan Data',
+            'Akun Aman'
+          ],
+          flowchartSummary: 'Keamanan akun terjaga baik'
+        },
+        svgType: 'security'
+      },
+      software: {
+        id: 'software',
+        name: 'Perangkat Lunak dan Sistem Operasi',
+        footerText: 'Laporan Informatika: Perangkat Lunak • Kelas VIII',
+        targets: {
+          title: 'Laporan Perangkat Lunak',
+          author: 'Deni Saputra',
+          classGrade: 'Kelas Delapan D',
+          intro: 'Program Menjalankan Tugas',
+          tableCaption: 'Tabel Jenis Software',
+          tableRows: [
+            { col1: 'Sistem Operasi', col2: 'Kelola Komputer' },
+            { col1: 'Aplikasi Kantor', col2: 'Ketik Dokumen' },
+            { col1: 'Peramban Web', col2: 'Jelajah Internet' },
+            { col1: 'Aplikasi Grafis', col2: 'Edit Gambar' },
+            { col1: 'Pemutar Media', col2: 'Putar Audio' }
+          ],
+          imageCaption: 'Gambar Sistem Operasi',
+          imageAnalysis: 'Aplikasi siap dijalankan',
+          flowchartCaption: 'Bagan Buka Aplikasi',
+          flowchartSteps: [
+            'Klik Ikon',
+            'Muat Memori',
+            'Proses CPU',
+            'Aplikasi Siap'
+          ],
+          flowchartSummary: 'Program berjalan otomatis'
+        },
+        svgType: 'software'
+      },
+      algoritma: {
+        id: 'algoritma',
+        name: 'Algoritma dan Pemrograman Dasar',
+        footerText: 'Laporan Informatika: Algoritma dan Pemrograman • Kelas VIII',
+        targets: {
+          title: 'Laporan Algoritma Logika',
+          author: 'Eka Wijaya',
+          classGrade: 'Kelas Delapan E',
+          intro: 'Langkah Menyelesaikan Masalah',
+          tableCaption: 'Tabel Perintah Logika',
+          tableRows: [
+            { col1: 'Variabel Data', col2: 'Simpan Nilai' },
+            { col1: 'Operasi Hitung', col2: 'Hitung Angka' },
+            { col1: 'Kondisi Jika', col2: 'Pilih Keputusan' },
+            { col1: 'Perulangan Loop', col2: 'Ulang Perintah' },
+            { col1: 'Cetak Hasil', col2: 'Tampil Layar' }
+          ],
+          imageCaption: 'Gambar Blok Algoritma',
+          imageAnalysis: 'Blok kode tersusun rapi',
+          flowchartCaption: 'Bagan Alur Logika',
+          flowchartSteps: [
+            'Mulai Program',
+            'Baca Masukan',
+            'Uji Syarat',
+            'Selesai Program'
+          ],
+          flowchartSummary: 'Logika diselesaikan runtut'
+        },
+        svgType: 'algorithm'
+      }
+    };
+
+    /* ==========================================================================
+       APP STATE MANAGEMENT
+       ========================================================================== */
+    const AppState = {
+      currentTheme: 'hardware',
+      soundEnabled: true,
+      marginVisible: true,
+      selectedElementId: null,
+      pendingTapPlacement: null,
+      activeMobileTab: 'canvas',
+      placedElements: {},
+      lastScore: 0,
+
+      // CANVAS ZOOM STATE (DEFAULT 100% AS REQUESTED)
+      canvasScale: 1.0,
+      isFitZoom: false,
+
+      // TIMER STATE
+      timer: {
+        durationSeconds: 180, // Default 3 Menit
+        remainingSeconds: 180,
+        isRunning: true,
+        isUnlimited: false,
+        intervalId: null
+      },
+
+      // TYPED CONTENT REPOSITORY (Stores what user typed)
+      typed: {
+        title: '',
+        author: '',
+        classGrade: '',
+        intro: '',
+        tableCaption: '',
+        tableRows: [
+          { col1: '', col2: '' },
+          { col1: '', col2: '' },
+          { col1: '', col2: '' },
+          { col1: '', col2: '' },
+          { col1: '', col2: '' }
+        ],
+        imageCaption: '',
+        imageAnalysis: '',
+        flowchartCaption: '',
+        flowchartSteps: ['', '', '', ''],
+        flowchartSummary: ''
+      }
+    };
+
+    /* ==========================================================================
+       SIMPLIFIED STRING NORMALIZER (NO SYMBOLS, NO SHIFT REQUIRED)
+       ========================================================================== */
+    function normalizeStrictText(str) {
+      if (!str) return '';
+      // Strip outer punctuation/symbols but PRESERVE CAPITALIZATION EXACTLY
+      return str.replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, ' ');
+    }
+
+    function checkMatch(typedText, targetText) {
+      const a = normalizeStrictText(typedText);
+      const b = normalizeStrictText(targetText);
+      if (!a || !b) return false;
+      // Strict case-sensitive match as requested by user
+      return a === b;
+    }
+
+    function isNameProperlyCapitalized(name) {
+      if (!name || name.trim().length < 2) return false;
+      const words = name.trim().split(/\s+/);
+      return words.every(w => {
+        if (!w) return true;
+        const firstChar = w[0];
+        return firstChar === firstChar.toUpperCase() && /[A-Z]/.test(firstChar);
+      });
+    }
+
+    function isCaseOnlyMismatch(typedText, targetText) {
+      const a = normalizeStrictText(typedText);
+      const b = normalizeStrictText(targetText);
+      if (!a || !b) return false;
+      return a.toLowerCase() === b.toLowerCase() && a !== b;
+    }
+
+    /* ==========================================================================
+       WEB AUDIO SYNTHESIZER
+       ========================================================================== */
+    const SoundFx = {
+      ctx: null,
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      },
+      playPop() {
+        if (!AppState.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+      },
+      playKeyType() {
+        if (!AppState.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(750 + Math.random() * 150, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.03);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.03);
+      },
+      playSuccess() {
+        if (!AppState.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.08);
+          osc.stop(this.ctx.currentTime + idx * 0.08 + 0.25);
+        });
+      },
+      playWarning() {
+        if (!AppState.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(260, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(220, this.ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.2);
+      },
+      playTimeUp() {
+        if (!AppState.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        for (let i = 0; i < 4; i++) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(600, this.ctx.currentTime + i * 0.15);
+          gain.gain.setValueAtTime(0.15, this.ctx.currentTime + i * 0.15);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i * 0.15 + 0.12);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.15);
+          osc.stop(this.ctx.currentTime + i * 0.15 + 0.12);
+        }
+      }
+    };
+
+    /* ==========================================================================
+       TIMER ENGINE
+       ========================================================================== */
+    function formatTime(totalSeconds) {
+      if (AppState.timer.isUnlimited) return '♾️ BEBAS';
+      const m = Math.floor(totalSeconds / 60);
+      const s = totalSeconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function updateTimerDisplay() {
+      const display = document.getElementById('timerDisplay');
+      display.textContent = formatTime(AppState.timer.remainingSeconds);
+
+      if (!AppState.timer.isUnlimited && AppState.timer.remainingSeconds <= 30 && AppState.timer.remainingSeconds > 0) {
+        display.classList.add('timer-warning');
+      } else {
+        display.classList.remove('timer-warning');
+      }
+    }
+
+    function startTimer() {
+      if (AppState.timer.intervalId) clearInterval(AppState.timer.intervalId);
+      AppState.timer.isRunning = true;
+      document.getElementById('btnTimerToggle').textContent = '⏸️';
+
+      AppState.timer.intervalId = setInterval(() => {
+        if (AppState.timer.isUnlimited) return;
+
+        if (AppState.timer.remainingSeconds > 0) {
+          AppState.timer.remainingSeconds--;
+          updateTimerDisplay();
+
+          if (AppState.timer.remainingSeconds === 30) {
+            SoundFx.playWarning();
+            showToast('⚠️', 'Waktu tersisa 30 detik lagi!');
+            setMascotReaction('thinking', 'Ayo semangat! Waktu tersisa tinggal 30 detik lagi!');
+          }
+        } else {
+          clearInterval(AppState.timer.intervalId);
+          AppState.timer.isRunning = false;
+          document.getElementById('btnTimerToggle').textContent = '▶️';
+          SoundFx.playTimeUp();
+          showToast('⏰', 'Waktu telah habis! Mari kita periksa hasilnya.');
+          setMascotReaction('thinking', 'Waktu simulasi sudah habis! Yuk kita lihat hasil kerja kerasmu!');
+          evaluateLayout(true);
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      AppState.timer.isRunning = false;
+      if (AppState.timer.intervalId) clearInterval(AppState.timer.intervalId);
+      document.getElementById('btnTimerToggle').textContent = '▶️';
+      showToast('⏸️', 'Timer dijeda.');
+    }
+
+    function toggleTimer() {
+      if (AppState.timer.isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      setCanvasScale(1.0, false);
+      setTimeout(autoFitPaper, 60);
+        showToast('▶️', 'Timer dilanjutkan.');
+      }
+    }
+
+    function resetTimer(newSeconds, isUnlimited = false) {
+      if (AppState.timer.intervalId) clearInterval(AppState.timer.intervalId);
+      AppState.timer.isUnlimited = isUnlimited;
+      AppState.timer.durationSeconds = newSeconds;
+      AppState.timer.remainingSeconds = newSeconds;
+      updateTimerDisplay();
+      startTimer();
+    }
+
+    function setTimerPreset(seconds, btnElement) {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+
+      if (seconds === 0) {
+        resetTimer(0, true);
+        showToast('♾️', 'Mode Tanpa Batas Waktu aktif.');
+      } else {
+        resetTimer(seconds, false);
+        showToast('⏱️', `Timer diatur: ${Math.floor(seconds/60)} menit.`);
+      }
+      closeModal('modalTimer');
+    }
+
+    function applyCustomTimeInput() {
+      const mins = parseInt(document.getElementById('customMinutesInput').value, 10) || 0;
+      const secs = parseInt(document.getElementById('customSecondsInput').value, 10) || 0;
+      const total = (mins * 60) + secs;
+
+      if (total <= 0) {
+        alert('Silakan masukkan waktu minimal 10 detik!');
+        return;
+      }
+
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      resetTimer(total, false);
+      closeModal('modalTimer');
+      showToast('⏱️', `Waktu kustom diatur: ${mins}m ${secs}s.`);
+    }
+
+    /* ==========================================================================
+       SVG ASSET GENERATOR
+       ========================================================================== */
+    const SvgAssets = {
+      getMascotSvg(mood = 'happy') {
+        let eyes = mood === 'thinking' 
+          ? `<circle cx="28" cy="28" r="3.5" fill="#1e293b"/><circle cx="44" cy="26" r="3.5" fill="#1e293b"/>`
+          : mood === 'celebrate'
+          ? `<path d="M24 28 Q28 22 32 28" stroke="#1e293b" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 28 Q44 22 48 28" stroke="#1e293b" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+          : `<circle cx="28" cy="28" r="3.5" fill="#1e293b"/><circle cx="44" cy="28" r="3.5" fill="#1e293b"/><circle cx="29" cy="27" r="1.2" fill="#ffffff"/><circle cx="45" cy="27" r="1.2" fill="#ffffff"/>`;
+
+        let mouth = mood === 'thinking'
+          ? `<path d="M33 40 Q36 38 40 40" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/>`
+          : `<path d="M30 38 Q36 45 42 38" stroke="#1e293b" stroke-width="2" fill="#f43f5e" stroke-linecap="round"/>`;
+
+        return `
+          <svg viewBox="0 0 72 72" width="100%" height="100%">
+            <path d="M18 36 C14 18 24 10 36 10 C48 10 58 18 54 36 Z" fill="#1e293b"/>
+            <circle cx="36" cy="34" r="18" fill="#fed7aa"/>
+            <path d="M20 25 Q32 14 52 24 C46 16 26 16 20 25 Z" fill="#0f172a"/>
+            <circle cx="28" cy="28" r="7.5" fill="none" stroke="#2563eb" stroke-width="2"/>
+            <circle cx="44" cy="28" r="7.5" fill="none" stroke="#2563eb" stroke-width="2"/>
+            <line x1="35.5" y1="28" x2="36.5" y2="28" stroke="#2563eb" stroke-width="2"/>
+            ${eyes}
+            ${mouth}
+            <circle cx="22" cy="34" r="3" fill="#fca5a5" opacity="0.6"/>
+            <circle cx="50" cy="34" r="3" fill="#fca5a5" opacity="0.6"/>
+            <path d="M18 26 C18 16 26 12 36 12 C46 12 54 16 54 26" fill="none" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="15" y="24" width="6" height="12" rx="3" fill="#7c3aed"/>
+            <rect x="51" y="24" width="6" height="12" rx="3" fill="#7c3aed"/>
+            <path d="M22 52 C22 46 28 44 36 44 C44 44 50 46 50 52 L54 70 L18 70 Z" fill="#0284c7"/>
+            <path d="M36 44 L32 52 L36 60 L40 52 Z" fill="#3b82f6"/>
+            <path d="M32 44 L36 50 L40 44 Z" fill="#ffffff"/>
+          </svg>
+        `;
+      },
+
+      getHardwareSvg() {
+        return `
+          <svg viewBox="0 0 380 140" width="100%" height="120" style="background:#090d16; border-radius:6px;">
+            <defs>
+              <pattern id="pcbGrid" width="16" height="16" patternUnits="userSpaceOnUse">
+                <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#0f291e" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="#061e14"/>
+            <rect width="100%" height="100%" fill="url(#pcbGrid)"/>
+
+            <path d="M 40 35 L 100 35 L 120 50 L 160 50" fill="none" stroke="#eab308" stroke-width="1.5"/>
+            <path d="M 40 85 L 80 85 L 100 100 L 160 100" fill="none" stroke="#eab308" stroke-width="1.5"/>
+            <path d="M 230 50 L 270 50 L 290 35 L 340 35" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+
+            <g transform="translate(155, 35)">
+              <rect x="0" y="0" width="70" height="70" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+              <rect x="8" y="8" width="54" height="54" rx="2" fill="#1e293b" stroke="#cbd5e1" stroke-width="1"/>
+              <rect x="18" y="18" width="34" height="34" rx="2" fill="#475569"/>
+              <text x="35" y="34" fill="#38bdf8" font-size="9" font-weight="bold" text-anchor="middle">CPU CHIP</text>
+              <text x="35" y="45" fill="#f8fafc" font-size="7" font-weight="bold" text-anchor="middle">8 CORE</text>
+            </g>
+
+            <g transform="translate(45, 18)">
+              <rect x="0" y="0" width="12" height="60" rx="2" fill="#047857" stroke="#10b981" stroke-width="1.5"/>
+              <rect x="18" y="0" width="12" height="60" rx="2" fill="#047857" stroke="#10b981" stroke-width="1.5"/>
+              <text x="15" y="74" fill="#a7f3d0" font-size="8" font-weight="bold" text-anchor="middle">RAM DDR4</text>
+            </g>
+
+            <g transform="translate(30, 95)">
+              <rect x="0" y="0" width="70" height="22" rx="3" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5"/>
+              <text x="35" y="15" fill="#c7d2fe" font-size="8" font-weight="bold" text-anchor="middle">STORAGE SSD</text>
+            </g>
+
+            <g transform="translate(295, 70)">
+              <circle cx="0" cy="0" r="28" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+              <circle cx="0" cy="0" r="9" fill="#0284c7"/>
+              <path d="M 0 -8 Q 12 -22 0 -26 Q -7 -18 0 -8" fill="#38bdf8"/>
+              <path d="M 8 0 Q 22 12 26 0 Q 18 -7 8 0" fill="#38bdf8"/>
+              <path d="M 0 8 Q -12 22 0 26 Q 7 18 0 8" fill="#38bdf8"/>
+              <path d="M -8 0 Q -22 -12 -26 0 Q -18 7 -8 0" fill="#38bdf8"/>
+              <text x="0" y="40" fill="#7dd3fc" font-size="8" font-weight="bold" text-anchor="middle">KIPAS PENDINGIN</text>
+            </g>
+
+            <text x="365" y="15" fill="#4ade80" font-size="8" font-weight="bold" text-anchor="end">Hardware Komputer</text>
+          </svg>
+        `;
+      },
+
+      getNetworkSvg() {
+        return `
+          <svg viewBox="0 0 380 140" width="100%" height="120" style="background:#0b1329; border-radius:6px;">
+            <g transform="translate(55, 50)">
+              <rect x="0" y="16" width="75" height="30" rx="4" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+              <line x1="16" y1="16" x2="6" y2="-8" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+              <line x1="59" y1="16" x2="69" y2="-8" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="18" cy="31" r="3" fill="#22c55e"/>
+              <circle cx="28" cy="31" r="3" fill="#22c55e"/>
+              <circle cx="38" cy="31" r="3" fill="#38bdf8"/>
+              <circle cx="48" cy="31" r="3" fill="#22c55e"/>
+              <path d="M 30 -12 Q 37 -18 45 -12" fill="none" stroke="#60a5fa" stroke-width="2"/>
+              <path d="M 24 -18 Q 37 -26 51 -18" fill="none" stroke="#38bdf8" stroke-width="2"/>
+              <text x="37" y="60" fill="#93c5fd" font-size="8.5" font-weight="bold" text-anchor="middle">ROUTER WIFI</text>
+            </g>
+
+            <path d="M 130 80 L 175 80 L 195 55 L 225 55" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4,4"/>
+            <path d="M 130 90 L 175 90 L 195 105 L 225 105" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-dasharray="4,4"/>
+
+            <g transform="translate(295, 65)">
+              <path d="M -40 8 A 40 40 0 1 1 40 8" fill="none" stroke="#1e293b" stroke-width="7"/>
+              <path d="M -40 8 A 40 40 0 0 1 22 -34" fill="none" stroke="#22c55e" stroke-width="7"/>
+              <line x1="0" y1="4" x2="20" y2="-28" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="0" cy="4" r="4" fill="#f8fafc"/>
+              <text x="0" y="20" fill="#22c55e" font-size="11" font-weight="bold" text-anchor="middle">100 Mbps</text>
+              <text x="0" y="32" fill="#94a3b8" font-size="7.5" font-weight="bold" text-anchor="middle">SPEEDTEST LAN</text>
+            </g>
+
+            <rect x="180" y="12" width="100" height="22" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+            <text x="230" y="27" fill="#38bdf8" font-size="8.5" font-weight="bold" text-anchor="middle">KONEKSI CEPAT</text>
+          </svg>
+        `;
+      },
+
+      
+      getSoftwareSvg() {
+        return `
+          <svg viewBox="0 0 460 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="8" width="440" height="124" rx="8" fill="#0284c7"/>
+            <g transform="translate(24, 18)">
+              <rect x="0" y="0" width="22" height="22" rx="4" fill="#38bdf8"/>
+              <text x="11" y="15" fill="white" font-size="12" text-anchor="middle" font-weight="bold">📄</text>
+              <text x="11" y="30" fill="white" font-size="6" text-anchor="middle">Berkas</text>
+              <rect x="0" y="36" width="22" height="22" rx="4" fill="#10b981"/>
+              <text x="11" y="51" fill="white" font-size="12" text-anchor="middle" font-weight="bold">📊</text>
+              <text x="11" y="66" fill="white" font-size="6" text-anchor="middle">Tabel</text>
+              <rect x="0" y="72" width="22" height="22" rx="4" fill="#f59e0b"/>
+              <text x="11" y="87" fill="white" font-size="12" text-anchor="middle" font-weight="bold">🌐</text>
+              <text x="11" y="102" fill="white" font-size="6" text-anchor="middle">Web</text>
+            </g>
+            <g transform="translate(68, 16)">
+              <rect x="0" y="0" width="240" height="96" rx="6" fill="#ffffff"/>
+              <rect x="0" y="0" width="240" height="18" rx="6" fill="#f1f5f9"/>
+              <circle cx="10" cy="9" r="3" fill="#ef4444"/>
+              <circle cx="18" cy="9" r="3" fill="#f59e0b"/>
+              <circle cx="26" cy="9" r="3" fill="#10b981"/>
+              <text x="120" y="12" fill="#334155" font-size="8" text-anchor="middle" font-weight="bold">Pengelola Berkas - Sistem Operasi</text>
+              <rect x="6" y="24" width="55" height="66" rx="3" fill="#f8fafc"/>
+              <text x="10" y="36" fill="#0284c7" font-size="7" font-weight="bold">📁 Dokumen</text>
+              <text x="10" y="48" fill="#64748b" font-size="7">📁 Unduhan</text>
+              <text x="10" y="60" fill="#64748b" font-size="7">📁 Gambar</text>
+              <text x="10" y="72" fill="#64748b" font-size="7">⚙️ Sistem</text>
+              <rect x="70" y="24" width="45" height="30" rx="3" fill="#eff6ff" stroke="#bfdbfe"/>
+              <text x="92" y="38" fill="#1e40af" font-size="10" text-anchor="middle">📝</text>
+              <text x="92" y="49" fill="#1e40af" font-size="6" text-anchor="middle" font-weight="bold">tugas.docx</text>
+              <rect x="124" y="24" width="45" height="30" rx="3" fill="#f0fdf4" stroke="#bbf7d0"/>
+              <text x="146" y="38" fill="#15803d" font-size="10" text-anchor="middle">📊</text>
+              <text x="146" y="49" fill="#15803d" font-size="6" text-anchor="middle" font-weight="bold">data.xlsx</text>
+              <rect x="178" y="24" width="45" height="30" rx="3" fill="#fef3c7" stroke="#fde68a"/>
+              <text x="200" y="38" fill="#b45309" font-size="10" text-anchor="middle">🖼️</text>
+              <text x="200" y="49" fill="#b45309" font-size="6" text-anchor="middle" font-weight="bold">foto.png</text>
+              <rect x="68" y="62" width="165" height="28" rx="4" fill="#f8fafc"/>
+              <text x="74" y="74" fill="#334155" font-size="7" font-weight="bold">Kinerja Sistem: Optimal (RAM 45%)</text>
+              <rect x="74" y="80" width="150" height="4" rx="2" fill="#e2e8f0"/>
+              <rect x="74" y="80" width="68" height="4" rx="2" fill="#10b981"/>
+            </g>
+            <g transform="translate(320, 24)">
+              <rect x="0" y="0" width="118" height="88" rx="6" fill="#ffffff"/>
+              <rect x="0" y="0" width="118" height="16" rx="6" fill="#3b82f6"/>
+              <text x="59" y="11" fill="white" font-size="7.5" text-anchor="middle" font-weight="bold">Pemutar Media</text>
+              <circle cx="59" cy="42" r="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+              <polygon points="56,36 66,42 56,48" fill="#2563eb"/>
+              <text x="59" y="70" fill="#1e293b" font-size="7" text-anchor="middle" font-weight="bold">Audio Digital.mp3</text>
+              <text x="59" y="80" fill="#64748b" font-size="6" text-anchor="middle">02:45 / 04:12</text>
+            </g>
+            <g transform="translate(10, 114)">
+              <rect x="0" y="0" width="440" height="18" rx="4" fill="#0f172a" opacity="0.95"/>
+              <rect x="4" y="2" width="24" height="14" rx="3" fill="#2563eb"/>
+              <text x="16" y="12" fill="white" font-size="9" text-anchor="middle">🪟</text>
+              <rect x="34" y="3" width="18" height="12" rx="2" fill="#334155"/>
+              <text x="43" y="12" fill="white" font-size="8" text-anchor="middle">📁</text>
+              <rect x="56" y="3" width="18" height="12" rx="2" fill="#2563eb"/>
+              <text x="65" y="12" fill="white" font-size="8" text-anchor="middle">🌐</text>
+              <text x="420" y="12" fill="#e2e8f0" font-size="7" text-anchor="end" font-weight="bold">10:45 • IDN</text>
+              <text x="360" y="12" fill="#94a3b8" font-size="7">🔊 📶 🔋</text>
+            </g>
+          </svg>
+        `;
+      },
+
+      getAlgorithmSvg() {
+        return `
+          <svg viewBox="0 0 460 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="8" width="440" height="124" rx="8" fill="#1e1e2e"/>
+            <g transform="translate(35, 18)">
+              <path d="M 0,0 L 20,0 C 26,-6 38,-6 44,0 L 190,0 Q 194,0 194,4 L 194,22 Q 194,26 190,26 L 44,26 C 38,32 26,32 20,26 L 0,26 Z" fill="#f59e0b"/>
+              <text x="14" y="16" fill="#78350f" font-size="10">🚩</text>
+              <text x="34" y="16" fill="#ffffff" font-size="8.5" font-weight="bold">ketika bendera hijau diklik</text>
+            </g>
+            <g transform="translate(35, 45)">
+              <path d="M 0,0 L 20,0 C 26,6 38,6 44,0 L 190,0 Q 194,0 194,4 L 194,20 Q 194,24 190,24 L 44,24 C 38,30 26,30 20,24 L 0,24 Z" fill="#ea580c"/>
+              <text x="14" y="15" fill="#ffffff" font-size="8.5" font-weight="bold">atur skor = 100</text>
+            </g>
+            <g transform="translate(35, 70)">
+              <path d="M 0,0 L 20,0 C 26,6 38,6 44,0 L 190,0 Q 194,0 194,4 L 194,20 Q 194,24 190,24 L 44,24 C 38,30 26,30 20,24 L 0,24 Z" fill="#0284c7"/>
+              <text x="14" y="15" fill="#ffffff" font-size="8.5" font-weight="bold">ulangi sebanyak 5 kali</text>
+            </g>
+            <g transform="translate(35, 95)">
+              <path d="M 0,0 L 20,0 C 26,6 38,6 44,0 L 190,0 Q 194,0 194,4 L 194,20 Q 194,24 190,24 L 44,24 C 38,30 26,30 20,24 L 0,24 Z" fill="#8b5cf6"/>
+              <text x="14" y="15" fill="#ffffff" font-size="8.5" font-weight="bold">tampilkan pesan "Halo Informatika"</text>
+            </g>
+            <g transform="translate(250, 18)">
+              <rect x="0" y="0" width="180" height="102" rx="6" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+              <rect x="0" y="0" width="180" height="18" rx="6" fill="#334155"/>
+              <text x="10" y="12" fill="#38bdf8" font-size="7.5" font-weight="bold">🖥️ Layar Eksekusi Program</text>
+              <circle cx="45" cy="58" r="16" fill="#fbbf24"/>
+              <circle cx="40" cy="54" r="2.5" fill="#0f172a"/>
+              <circle cx="50" cy="54" r="2.5" fill="#0f172a"/>
+              <path d="M 40,62 Q 45,67 50,62" stroke="#0f172a" stroke-width="2" fill="none"/>
+              <path d="M 66,45 L 85,45 Q 165,45 165,58 L 165,72 Q 165,80 150,80 L 75,80 Q 66,80 66,72 L 66,55 Z" fill="#f1f5f9" stroke="#cbd5e1"/>
+              <polygon points="66,55 58,58 66,62" fill="#f1f5f9"/>
+              <text x="74" y="58" fill="#1e293b" font-size="7.5" font-weight="bold">Halo Informatika!</text>
+              <text x="74" y="70" fill="#10b981" font-size="6.5" font-weight="bold">Nilai Skor: 100 [Sukses]</text>
+              <text x="10" y="94" fill="#64748b" font-size="6">Status: Alur logika algoritma berjalan lancar</text>
+            </g>
+          </svg>
+        `;
+      },
+
+      getSecuritySvg() {
+        return `
+          <svg viewBox="0 0 380 140" width="100%" height="120" style="background:#090d16; border-radius:6px;">
+            <g transform="translate(90, 65)">
+              <path d="M 0 -40 L 32 -26 L 32 12 C 32 30 0 46 0 46 C 0 46 -32 30 -32 12 L -32 -26 Z" 
+                    fill="#1e3a8a" stroke="#3b82f6" stroke-width="2.5"/>
+              <rect x="-12" y="-6" width="24" height="20" rx="3" fill="#f59e0b" stroke="#d97706" stroke-width="1.5"/>
+              <path d="M -7 -6 L -7 -15 C -7 -21 7 -21 7 -15 L 7 -6" fill="none" stroke="#fef08a" stroke-width="3" stroke-linecap="round"/>
+              <text x="0" y="58" fill="#93c5fd" font-size="8.5" font-weight="bold" text-anchor="middle">AKUN AMAN</text>
+            </g>
+
+            <g transform="translate(190, 32)">
+              <rect x="0" y="0" width="165" height="38" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+              <text x="12" y="15" fill="#94a3b8" font-size="7" font-weight="bold">KATA SANDI KUAT</text>
+              <text x="12" y="29" fill="#34d399" font-family="monospace" font-size="11" font-weight="bold">Kombinasi Rahasia</text>
+              <circle cx="148" cy="19" r="8" fill="#059669"/>
+              <path d="M 144 19 L 147 22 L 153 16" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+            </g>
+
+            <g transform="translate(190, 80)">
+              <rect x="0" y="0" width="165" height="42" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+              <text x="10" y="15" fill="#38bdf8" font-size="8" font-weight="bold">Proteksi Ganda Aktif</text>
+              <text x="10" y="27" fill="#38bdf8" font-size="8" font-weight="bold">Cadangan Data Cloud</text>
+              <text x="10" y="38" fill="#38bdf8" font-size="8" font-weight="bold">Waspada Tautan Asing</text>
+            </g>
+          </svg>
+        `;
+      },
+
+      getBadgeSvg(type = 'gold') {
+        const colors = {
+          gold: { bg: '#f59e0b', ring: '#d97706', ribbon: '#dc2626', star: '#fef08a' },
+          silver: { bg: '#94a3b8', ring: '#64748b', ribbon: '#2563eb', star: '#f8fafc' },
+          bronze: { bg: '#d97706', ring: '#b45309', ribbon: '#059669', star: '#ffedd5' }
+        }[type] || { bg: '#f59e0b', ring: '#d97706', ribbon: '#dc2626', star: '#fef08a' };
+
+        return `
+          <svg viewBox="0 0 100 100" width="100%" height="100%">
+            <polygon points="30,65 20,95 40,88 50,95 45,65" fill="${colors.ribbon}"/>
+            <polygon points="70,65 80,95 60,88 50,95 55,65" fill="${colors.ribbon}"/>
+            <circle cx="50" cy="46" r="36" fill="${colors.ring}"/>
+            <circle cx="50" cy="46" r="32" fill="${colors.bg}"/>
+            <circle cx="50" cy="46" r="26" fill="none" stroke="${colors.star}" stroke-width="2" stroke-dasharray="3,3"/>
+            <polygon points="50,26 56,38 70,39 59,48 63,62 50,54 37,62 41,48 30,39 44,38" fill="${colors.star}"/>
+          </svg>
+        `;
+      }
+    };
+
+    /* ==========================================================================
+       DOM REFERENCES
+       ========================================================================== */
+    const DOM = {
+      themeSelect: document.getElementById('themeSelect'),
+      btnHelp: document.getElementById('btnHelp'),
+      btnExample: document.getElementById('btnExample'),
+      btnReset: document.getElementById('btnReset'),
+      btnAudioToggle: document.getElementById('btnAudioToggle'),
+      btnToggleMargin: document.getElementById('btnToggleMargin'),
+      btnAutoArrange: document.getElementById('btnAutoArrange'),
+      btnZoomOut: document.getElementById('btnZoomOut'),
+      btnZoomFit: document.getElementById('btnZoomFit'),
+      btnZoom100: document.getElementById('btnZoom100'),
+      btnZoomIn: document.getElementById('btnZoomIn'),
+      zoomPercentText: document.getElementById('zoomPercentText'),
+      canvasViewport: document.getElementById('canvasViewport'),
+      canvasToolbar: document.getElementById('canvasToolbar'),
+      paperWrapper: document.getElementById('paperWrapper'),
+      btnCheckLayout: document.getElementById('btnCheckLayout'),
+      btnDownloadReport: document.getElementById('btnDownloadReport'),
+      btnTimerToggle: document.getElementById('btnTimerToggle'),
+      btnOpenTimerModal: document.getElementById('btnOpenTimerModal'),
+      a4Paper: document.getElementById('a4Paper'),
+      marginGuide: document.getElementById('marginGuide'),
+      mascotAvatar: document.getElementById('mascotAvatar'),
+      mascotMessage: document.getElementById('mascotMessage'),
+      scoreNumber: document.getElementById('scoreNumber'),
+      scoreStars: document.getElementById('scoreStars'),
+      scoreBadge: document.getElementById('scoreBadge'),
+      feedbackList: document.getElementById('feedbackList'),
+      elementCountBadge: document.getElementById('elementCountBadge'),
+      paperFooterTheme: document.getElementById('paperFooterTheme'),
+      toastPill: document.getElementById('toastPill'),
+      toastMsg: document.getElementById('toastMsg'),
+      toastIcon: document.getElementById('toastIcon'),
+      toolboxPanel: document.getElementById('toolboxPanel'),
+      inspectorSidebar: document.getElementById('inspectorSidebar'),
+      tapModeNotice: document.getElementById('tapModeNotice')
+    };
+
+    DOM.mascotAvatar.innerHTML = SvgAssets.getMascotSvg('happy');
+
+    /* ==========================================================================
+       THEME MANAGEMENT
+       ========================================================================== */
+    function setAppTheme(themeKey) {
+      if (!THEMES[themeKey]) return;
+      AppState.currentTheme = themeKey;
+      const themeData = THEMES[themeKey];
+      
+      DOM.paperFooterTheme.textContent = themeData.footerText;
+      showToast('💻', `Materi dipilih: ${themeData.name}`);
+
+      ['title', 'table', 'image', 'flowchart'].forEach(type => {
+        if (AppState.placedElements[type]) {
+          renderElementDom(type);
+        }
+      });
+
+      evaluateLayout(false);
+    }
+
+    DOM.themeSelect.addEventListener('change', (e) => {
+      setAppTheme(e.target.value);
+    });
+
+    /* ==========================================================================
+       ELEMENT SPECS & PLACEMENT LOGIC
+       ========================================================================== */
+    const DEFAULT_SPECS = {
+      title: { width: 547, height: 165, defaultX: 24, defaultY: 24 },
+      table: { width: 547, height: 255, defaultX: 24, defaultY: 198 },
+      image: { width: 547, height: 130, defaultX: 24, defaultY: 462 },
+      flowchart: { width: 547, height: 110, defaultX: 24, defaultY: 602 }
+    };
+
+    function placeElement(type, x, y) {
+      const spec = DEFAULT_SPECS[type];
+
+      if (x === undefined || y === undefined) {
+        x = spec.defaultX;
+        y = spec.defaultY;
+      }
+
+      AppState.placedElements[type] = {
+        id: type,
+        type: type,
+        x: Math.max(10, Math.min(x, 595 - spec.width - 10)),
+        y: Math.max(10, Math.min(y, 842 - spec.height - 10)),
+        width: spec.width,
+        height: spec.height
+      };
+
+      SoundFx.playPop();
+      renderAllPlacedElements();
+      updateToolboxCards();
+      selectElement(type);
+      evaluateLayout(false);
+
+      setMascotReaction('happy', `Bagus! <b>${getElementTitle(type)}</b> sudah ada di kertas. Yuk <b>ketik teks panduannya</b>!`);
+      showToast('➕', `${getElementTitle(type)} diletakkan! Ketik teks panduannya.`);
+    }
+
+    function removeElement(type) {
+      if (AppState.placedElements[type]) {
+        delete AppState.placedElements[type];
+        if (AppState.selectedElementId === type) {
+          AppState.selectedElementId = null;
+        }
+        SoundFx.playPop();
+        renderAllPlacedElements();
+        updateToolboxCards();
+        evaluateLayout(false);
+        setMascotReaction('thinking', `Elemen telah dikembalikan ke toolbox.`);
+        showToast('🗑️', `${getElementTitle(type)} dihapus.`);
+      }
+    }
+
+    function placeElementFromPalette(type) {
+      cancelTapMode();
+      if (AppState.placedElements[type]) {
+        selectElement(type);
+        showToast('📍', `${getElementTitle(type)} sudah di atas kertas!`);
+      } else {
+        placeElement(type);
+      }
+    }
+
+    /* ==========================================================================
+       TAP-TO-SELECT & TAP-TO-PLACE FOR MOBILE
+       ========================================================================== */
+    function startTapMode(type) {
+      AppState.pendingTapPlacement = type;
+      
+      document.querySelectorAll('.element-card').forEach(c => c.classList.remove('is-selected-for-tap'));
+      const targetCard = document.getElementById(`card-${type}`);
+      if (targetCard) targetCard.classList.add('is-selected-for-tap');
+
+      DOM.tapModeNotice.classList.add('active');
+      DOM.a4Paper.classList.add('waiting-for-tap');
+
+      if (window.innerWidth <= 768) {
+        toggleMobileTab('canvas');
+      }
+
+      setMascotReaction('thinking', `Elemen <b>${getElementTitle(type)}</b> dipilih! Sekarang ketuk (tap) area kertas A4 untuk meletakkannya.`);
+      showToast('🎯', `Ketuk kertas A4 untuk meletakkan ${getElementTitle(type)}!`);
+    }
+
+    function cancelTapMode() {
+      AppState.pendingTapPlacement = null;
+      document.querySelectorAll('.element-card').forEach(c => c.classList.remove('is-selected-for-tap'));
+      DOM.tapModeNotice.classList.remove('active');
+      DOM.a4Paper.classList.remove('waiting-for-tap');
+    }
+
+    DOM.a4Paper.addEventListener('click', (e) => {
+      if (AppState.pendingTapPlacement) {
+        const type = AppState.pendingTapPlacement;
+        const rect = DOM.a4Paper.getBoundingClientRect();
+        const scale = getCanvasScale();
+        const clickX = (e.clientX - rect.left) / scale;
+        const clickY = (e.clientY - rect.top) / scale;
+        const spec = DEFAULT_SPECS[type];
+        const placeX = Math.round(Math.max(10, Math.min(clickX - spec.width / 2, 595 - spec.width - 10)));
+        const placeY = Math.round(Math.max(10, Math.min(clickY - spec.height / 2, 842 - spec.height - 10)));
+
+        cancelTapMode();
+        placeElement(type, placeX, placeY);
+        return;
+      }
+
+      if (e.target === DOM.a4Paper || e.target === DOM.marginGuide) {
+        AppState.selectedElementId = null;
+        document.querySelectorAll('.placed-element').forEach(n => n.classList.remove('is-selected'));
+      }
+    });
+
+    function getElementTitle(type) {
+      return {
+        title: 'Judul & Teks Laporan',
+        table: 'Tabel Data Excel',
+        image: 'Tangkapan Layar Gambar',
+        flowchart: 'Diagram Alur Shapes'
+      }[type] || type;
+    }
+
+    /* ==========================================================================
+       RENDER PLACED ELEMENTS & IN-DOCUMENT INTERACTIVE INPUTS
+       ========================================================================== */
+    function renderAllPlacedElements() {
+      const existingNodes = DOM.a4Paper.querySelectorAll('.placed-element');
+      existingNodes.forEach(node => node.remove());
+
+      Object.keys(AppState.placedElements).forEach(type => {
+        renderElementDom(type);
+      });
+
+      const count = Object.keys(AppState.placedElements).length;
+      DOM.elementCountBadge.textContent = `${count} / 4 Ditaruh`;
+      DOM.elementCountBadge.className = count === 4 ? 'badge-pill status-ready' : 'badge-pill';
+    }
+
+    function renderElementDom(type) {
+      const elData = AppState.placedElements[type];
+      if (!elData) return;
+
+      let elNode = document.getElementById(`placed-${type}`);
+      if (!elNode) {
+        elNode = document.createElement('div');
+        elNode.id = `placed-${type}`;
+        elNode.className = 'placed-element';
+        elNode.setAttribute('data-type', type);
+        DOM.a4Paper.appendChild(elNode);
+        attachElementInteraction(elNode, type);
+      }
+
+      elNode.style.left = `${elData.x}px`;
+      elNode.style.top = `${elData.y}px`;
+      elNode.style.width = `${elData.width}px`;
+
+      if (AppState.selectedElementId === type) {
+        elNode.classList.add('is-selected');
+      } else {
+        elNode.classList.remove('is-selected');
+      }
+
+      elNode.innerHTML = `
+        <div class="element-control-dock">
+          <button class="dock-btn" onclick="moveElementUp('${type}', event)" title="Geser ke Atas">🔼 Naik</button>
+          <button class="dock-btn" onclick="moveElementDown('${type}', event)" title="Geser ke Bawah">🔽 Turun</button>
+          <button class="dock-btn" onclick="centerElement('${type}', event)" title="Ratakan ke Tengah">🎯 Tengah</button>
+          <button class="dock-btn" onclick="toggleElementWidth('${type}', event)" title="Ubah Ukuran Lebar">↔️ Lebar</button>
+          <button class="dock-btn dock-btn-danger" onclick="removeElement('${type}')" title="Hapus dari Kertas">🗑️ Hapus</button>
+        </div>
+        ${generateElementContentHtml(type)}
+      `;
+
+      setTimeout(() => {
+        if (AppState.placedElements[type]) {
+          AppState.placedElements[type].height = elNode.offsetHeight;
+        }
+      }, 50);
+    }
+
+    function generateElementContentHtml(type) {
+      const theme = THEMES[AppState.currentTheme];
+      const targets = theme.targets;
+      const typed = AppState.typed;
+
+      switch (type) {
+        case 'title': {
+          const isTitleMatch = checkMatch(typed.title, targets.title);
+          const isAuthorMatch = isNameProperlyCapitalized(typed.author);
+          const isClassMatch = typed.classGrade && typed.classGrade.trim().length >= 1;
+          const isIntroMatch = checkMatch(typed.intro, targets.intro);
+
+          return `
+            <div class="doc-text-block">
+              <div class="doc-header-line">
+                <span class="doc-badge badge-word">📄 Pengolah Kata (MS Word)</span>
+                <span class="guide-hint">Ketik judul, nama, kelas bebas, dan pengantar</span>
+              </div>
+              
+              <!-- 1. Input Judul -->
+              <div class="doc-field-group">
+                <div class="field-label-row">
+                  <span class="field-name">Judul Laporan:</span>
+                  <span class="field-target-hint" title="${escapeHtml(targets.title)}">👉 Ketik: <strong>${escapeHtml(targets.title)}</strong></span>
+                </div>
+                <input type="text" class="input-field-doc ${isTitleMatch ? 'is-valid' : ''}" 
+                       id="inputDocTitle" placeholder="${targets.title}" 
+                       value="${escapeHtml(typed.title)}"
+                       oninput="handleTyping('title', this.value, '${targets.title}', this)">
+              </div>
+
+              <!-- 2. Input Nama Penulis (Bebas / Mandiri) -->
+              <div class="doc-field-group">
+                <div class="field-label-row">
+                  <span class="field-name">Nama Penulis:</span>
+                  <span class="field-target-hint">👉 Isi: <strong>Nama lengkapmu sendiri</strong></span>
+                </div>
+                <input type="text" class="input-field-doc ${isAuthorMatch ? 'is-valid' : ''}" 
+                       id="inputDocAuthor" placeholder="Ketik nama lengkapmu sendiri..." 
+                       value="${escapeHtml(typed.author)}"
+                       oninput="handleTyping('author', this.value, '', this)">
+              </div>
+
+              <!-- 3. Input Kelas (Bebas / Mandiri) -->
+              <div class="doc-field-group">
+                <div class="field-label-row">
+                  <span class="field-name">Kelas:</span>
+                  <span class="field-target-hint">👉 Isi: <strong>Kelasmu (contoh: 8A / VIII B)</strong></span>
+                </div>
+                <input type="text" class="input-field-doc ${isClassMatch ? 'is-valid' : ''}" 
+                       id="inputDocClass" placeholder="Ketik kelasmu (misal: 8A / VIII-1)..." 
+                       value="${escapeHtml(typed.classGrade || '')}"
+                       oninput="handleTyping('classGrade', this.value, '', this)">
+              </div>
+
+              <!-- 4. Input Pengantar -->
+              <div class="doc-field-group">
+                <div class="field-label-row">
+                  <span class="field-name">Paragraf Pengantar:</span>
+                  <span class="field-target-hint" title="${escapeHtml(targets.intro)}">👉 Ketik: <strong>${escapeHtml(targets.intro)}</strong></span>
+                </div>
+                <input type="text" class="input-field-doc ${isIntroMatch ? 'is-valid' : ''}" 
+                       id="inputDocIntro" placeholder="${targets.intro}" 
+                       value="${escapeHtml(typed.intro)}"
+                       oninput="handleTyping('intro', this.value, '${targets.intro}', this)">
+              </div>
+            </div>
+          `;
+        }
+
+        case 'table': {
+          const isTableCapMatch = checkMatch(typed.tableCaption, targets.tableCaption);
+
+          return `
+            <div class="doc-table-block">
+              <div class="doc-header-line">
+                <span class="doc-badge badge-excel">📊 Lembar Kerja (MS Excel)</span>
+                <span class="guide-hint">Ketik judul tabel dan data sel (contoh tertera di tiap sel)</span>
+              </div>
+
+              <!-- Judul Tabel -->
+              <div class="doc-field-group">
+                <div class="field-label-row">
+                  <span class="field-name">Judul Tabel:</span>
+                  <span class="field-target-hint" title="${escapeHtml(targets.tableCaption)}">👉 Ketik: <strong>${escapeHtml(targets.tableCaption)}</strong></span>
+                </div>
+                <input type="text" class="input-field-doc ${isTableCapMatch ? 'is-valid' : ''}" 
+                       id="inputTableCaption" placeholder="${targets.tableCaption}" 
+                       value="${escapeHtml(typed.tableCaption)}"
+                       oninput="handleTyping('tableCaption', this.value, '${targets.tableCaption}', this)">
+              </div>
+
+              <!-- Interactive Excel Table (5 rows with persistent example targets) -->
+              <table class="interactive-table">
+                <thead>
+                  <tr>
+                    <th style="width:7%;">No</th>
+                    <th style="width:46.5%;">Nama Komponen / Lokasi / Kategori</th>
+                    <th style="width:46.5%;">Fungsi / Status / Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${targets.tableRows.map((row, idx) => {
+                    const rowTyped = typed.tableRows[idx] || { col1: '', col2: '' };
+                    const isCol1Match = checkMatch(rowTyped.col1, row.col1);
+                    const isCol2Match = checkMatch(rowTyped.col2, row.col2);
+
+                    return `
+                      <tr>
+                        <td style="font-weight:bold; color:#64748b; vertical-align:middle;">${idx + 1}</td>
+                        <td>
+                          <div class="table-cell-wrap">
+                            <div class="cell-guide-text ${isCol1Match ? 'is-match' : ''}">
+                              <span class="cell-guide-label">${isCol1Match ? '✅' : 'Target:'}</span>
+                              <span class="cell-guide-val" title="${escapeHtml(row.col1)}">${escapeHtml(row.col1)}</span>
+                            </div>
+                            <input type="text" class="table-cell-input ${isCol1Match ? 'is-valid' : ''}"
+                                   placeholder="${row.col1}" 
+                                   value="${escapeHtml(rowTyped.col1)}"
+                                   oninput="handleTableCellTyping(${idx}, 'col1', this.value, '${row.col1}', this)">
+                          </div>
+                        </td>
+                        <td>
+                          <div class="table-cell-wrap">
+                            <div class="cell-guide-text ${isCol2Match ? 'is-match' : ''}">
+                              <span class="cell-guide-label">${isCol2Match ? '✅' : 'Target:'}</span>
+                              <span class="cell-guide-val" title="${escapeHtml(row.col2)}">${escapeHtml(row.col2)}</span>
+                            </div>
+                            <input type="text" class="table-cell-input ${isCol2Match ? 'is-valid' : ''}"
+                                   placeholder="${row.col2}" 
+                                   value="${escapeHtml(rowTyped.col2)}"
+                                   oninput="handleTableCellTyping(${idx}, 'col2', this.value, '${row.col2}', this)">
+                          </div>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        case 'image': {
+          const isImgMatch = checkMatch(typed.imageCaption, targets.imageCaption);
+          let svgGraphic = '';
+          if (theme.svgType === 'hardware') svgGraphic = SvgAssets.getHardwareSvg();
+          else if (theme.svgType === 'network') svgGraphic = SvgAssets.getNetworkSvg();
+          else if (theme.svgType === 'security') svgGraphic = SvgAssets.getSecuritySvg();
+          else if (theme.svgType === 'software') svgGraphic = SvgAssets.getSoftwareSvg();
+          else svgGraphic = SvgAssets.getAlgorithmSvg();
+
+          return `
+            <div class="doc-image-block">
+              <div class="doc-header-line">
+                <span class="doc-badge badge-snip">✂️ Tangkapan Layar (Snipping Tool)</span>
+                <span class="guide-hint">Ketik keterangan tangkapan layar di bawah</span>
+              </div>
+              <div class="image-preview-frame">
+                ${svgGraphic}
+              </div>
+              
+              <!-- Input Keterangan Gambar -->
+              <div class="doc-field-group" style="margin-top: 3px;">
+                <div class="field-label-row">
+                  <span class="field-name">Keterangan Gambar:</span>
+                  <span class="field-target-hint" title="${escapeHtml(targets.imageCaption)}">👉 Ketik: <strong>${escapeHtml(targets.imageCaption)}</strong></span>
+                </div>
+                <input type="text" class="input-field-doc ${isImgMatch ? 'is-valid' : ''}" 
+                       id="inputImageCaption" placeholder="${targets.imageCaption}" 
+                       value="${escapeHtml(typed.imageCaption)}"
+                       oninput="handleTyping('imageCaption', this.value, '${targets.imageCaption}', this)">
+              </div>
+            </div>
+          `;
+        }
+
+        case 'flowchart': {
+          const isFlowMatch = checkMatch(typed.flowchartCaption, targets.flowchartCaption);
+
+          return `
+            <div class="doc-flowchart-block">
+              <div class="doc-header-line">
+                <span class="doc-badge badge-shapes">🔀 Diagram Alur (Shapes)</span>
+                <span class="guide-hint">Ketik judul dan 4 kotak langkah alur berurutan</span>
+              </div>
+
+              <!-- Judul Bagan -->
+              <div class="doc-field-group">
+                <div class="field-label-row">
+                  <span class="field-name">Judul Bagan Alur:</span>
+                  <span class="field-target-hint" title="${escapeHtml(targets.flowchartCaption)}">👉 Ketik: <strong>${escapeHtml(targets.flowchartCaption)}</strong></span>
+                </div>
+                <input type="text" class="input-field-doc ${isFlowMatch ? 'is-valid' : ''}" 
+                       id="inputFlowchartCaption" placeholder="${targets.flowchartCaption}" 
+                       value="${escapeHtml(typed.flowchartCaption)}"
+                       oninput="handleTyping('flowchartCaption', this.value, '${targets.flowchartCaption}', this)">
+              </div>
+
+              <!-- 4 Step Boxes with Persistent Targets -->
+              <div class="flowchart-container">
+                ${targets.flowchartSteps.map((step, idx) => {
+                  const stepVal = typed.flowchartSteps[idx] || '';
+                  const isStepMatch = checkMatch(stepVal, step);
+                  return `
+                    <div class="flow-box-wrap">
+                      <div class="flow-step-header">
+                        <span class="step-num-tag">T${idx + 1}</span>
+                        <span class="flow-guide-hint" title="${escapeHtml(step)}">${isStepMatch ? '✅' : '👉'} <b>${escapeHtml(step)}</b></span>
+                      </div>
+                      <input type="text" class="flow-input-box ${isStepMatch ? 'is-valid' : ''}" 
+                             placeholder="${step}" 
+                             value="${escapeHtml(stepVal)}"
+                             oninput="handleFlowStepTyping(${idx}, this.value, '${step}', this)">
+                    </div>
+                    ${idx < 3 ? '<div class="flow-arrow">➔</div>' : ''}
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }
+      }
+      return '';
+    }
+
+    /* ==========================================================================
+       TYPING HANDLERS & AUTO-COPY HELPERS
+       ========================================================================== */
+    function handleTyping(field, val, targetVal, inputEl) {
+      AppState.typed[field] = val;
+      SoundFx.playKeyType();
+
+      let isMatch = false;
+      if (field === 'author') {
+        isMatch = isNameProperlyCapitalized(val);
+      } else if (field === 'classGrade') {
+        isMatch = Boolean(val && val.trim().length >= 1);
+      } else {
+        isMatch = checkMatch(val, targetVal);
+      }
+
+      if (isMatch) {
+        inputEl.classList.add('is-valid');
+      } else {
+        inputEl.classList.remove('is-valid');
+      }
+
+      evaluateLayout(false);
+    }
+
+    function handleTableCellTyping(rowIdx, colKey, val, targetVal, inputEl) {
+      if (!AppState.typed.tableRows[rowIdx]) {
+        AppState.typed.tableRows[rowIdx] = { col1: '', col2: '' };
+      }
+      AppState.typed.tableRows[rowIdx][colKey] = val;
+      SoundFx.playKeyType();
+
+      const isMatch = checkMatch(val, targetVal);
+      if (isMatch) {
+        inputEl.classList.add('is-valid');
+      } else {
+        inputEl.classList.remove('is-valid');
+      }
+
+      // Update persistent guide tag right above cell
+      const wrap = inputEl.closest('.table-cell-wrap');
+      if (wrap) {
+        const guide = wrap.querySelector('.cell-guide-text');
+        if (guide) {
+          if (isMatch) {
+            guide.classList.add('is-match');
+            guide.querySelector('.cell-guide-label').textContent = '✅';
+          } else {
+            guide.classList.remove('is-match');
+            guide.querySelector('.cell-guide-label').textContent = 'Target:';
+          }
+        }
+      }
+
+      evaluateLayout(false);
+    }
+
+    function handleFlowStepTyping(stepIdx, val, targetVal, inputEl) {
+      AppState.typed.flowchartSteps[stepIdx] = val;
+      SoundFx.playKeyType();
+
+      const isMatch = checkMatch(val, targetVal);
+      if (isMatch) {
+        inputEl.classList.add('is-valid');
+      } else {
+        inputEl.classList.remove('is-valid');
+      }
+
+      // Update persistent flow step hint above box
+      const wrap = inputEl.closest('.flow-box-wrap');
+      if (wrap) {
+        const hint = wrap.querySelector('.flow-guide-hint');
+        if (hint) {
+          if (isMatch) {
+            hint.innerHTML = `✅ <b>${escapeHtml(targetVal)}</b>`;
+            hint.style.color = '#047857';
+          } else {
+            hint.innerHTML = `👉 <b>${escapeHtml(targetVal)}</b>`;
+            hint.style.color = '#6b21a8';
+          }
+        }
+      }
+
+      evaluateLayout(false);
+    }
+
+    // Copy feature removed - students type manually
+
+    // Auto-fill button removed - students type manually
+
+    
+    /* ==========================================================================
+       CANVAS ZOOM & AUTO-FIT CONTROLS
+       ========================================================================== */
+    function getCanvasScale() {
+      return AppState.canvasScale || 0.65;
+    }
+
+    function setCanvasScale(scale, isFit = false) {
+      scale = Math.max(0.35, Math.min(scale, 1.4));
+      AppState.canvasScale = parseFloat(scale.toFixed(3));
+      AppState.isFitZoom = isFit;
+
+      document.documentElement.style.setProperty('--canvas-scale', AppState.canvasScale);
+
+      if (DOM.zoomPercentText) {
+        DOM.zoomPercentText.textContent = `${Math.round(AppState.canvasScale * 100)}%`;
+      }
+      if (DOM.btnZoomFit) {
+        DOM.btnZoomFit.classList.toggle('active', isFit);
+      }
+      if (DOM.btnZoom100) {
+        DOM.btnZoom100.classList.toggle('active', !isFit && Math.abs(AppState.canvasScale - 1.0) < 0.03);
+      }
+    }
+
+    function autoFitPaper() {
+      if (!DOM.canvasViewport) return;
+      const vp = DOM.canvasViewport;
+      const toolbarH = DOM.canvasToolbar ? DOM.canvasToolbar.offsetHeight + 14 : 44;
+      const availH = vp.clientHeight - toolbarH - 16;
+      const availW = vp.clientWidth - 24;
+
+      if (availH <= 50 || availW <= 50) return;
+
+      const scaleH = availH / 842;
+      const scaleW = availW / 595;
+      const fitScale = Math.min(scaleH, scaleW);
+
+      setCanvasScale(fitScale, true);
+    }
+
+    function zoomIn() {
+      setCanvasScale(AppState.canvasScale + 0.08, false);
+    }
+
+    function zoomOut() {
+      setCanvasScale(AppState.canvasScale - 0.08, false);
+    }
+
+    /* ==========================================================================
+       DRAGGING & ELEMENT SELECTION
+       ========================================================================== */
+    function selectElement(type) {
+      AppState.selectedElementId = type;
+      document.querySelectorAll('.placed-element').forEach(node => {
+        if (node.getAttribute('data-type') === type) {
+          node.classList.add('is-selected');
+        } else {
+          node.classList.remove('is-selected');
+        }
+      });
+    }
+
+    function attachElementInteraction(elNode, type) {
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let initX = 0, initY = 0;
+
+      elNode.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectElement(type);
+      });
+
+      elNode.addEventListener('pointerdown', (e) => {
+        // Prevent dragging when clicking input fields, copy buttons or dock buttons
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.closest('.dock-btn') ) {
+          return;
+        }
+
+        isDragging = true;
+        selectElement(type);
+        elNode.setPointerCapture(e.pointerId);
+
+        startX = e.clientX;
+        startY = e.clientY;
+        const elData = AppState.placedElements[type];
+        initX = elData.x;
+        initY = elData.y;
+        elNode.style.cursor = 'grabbing';
+      });
+
+      elNode.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const scale = getCanvasScale();
+        const deltaX = (e.clientX - startX) / scale;
+        const deltaY = (e.clientY - startY) / scale;
+        let newX = Math.round(initX + deltaX);
+        let newY = Math.round(initY + deltaY);
+
+        const elData = AppState.placedElements[type];
+        newX = Math.max(5, Math.min(newX, 595 - elData.width - 5));
+        newY = Math.max(5, Math.min(newY, 842 - 40));
+
+        elData.x = newX;
+        elData.y = newY;
+        elNode.style.left = `${newX}px`;
+        elNode.style.top = `${newY}px`;
+
+        evaluateLayout(false);
+      });
+
+      const endDrag = (e) => {
+        if (isDragging) {
+          isDragging = false;
+          elNode.style.cursor = 'move';
+          evaluateLayout(false);
+        }
+      };
+
+      elNode.addEventListener('pointerup', endDrag);
+      elNode.addEventListener('pointercancel', endDrag);
+    }
+
+    const toolboxCards = document.querySelectorAll('.element-card');
+    toolboxCards.forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        const type = card.getAttribute('data-type');
+        e.dataTransfer.setData('text/plain', type);
+        card.style.opacity = '0.5';
+      });
+
+      card.addEventListener('dragend', () => {
+        card.style.opacity = '1';
+      });
+    });
+
+    DOM.a4Paper.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      DOM.a4Paper.classList.add('drag-over');
+    });
+
+    DOM.a4Paper.addEventListener('dragleave', () => {
+      DOM.a4Paper.classList.remove('drag-over');
+    });
+
+    DOM.a4Paper.addEventListener('drop', (e) => {
+      e.preventDefault();
+      DOM.a4Paper.classList.remove('drag-over');
+      const type = e.dataTransfer.getData('text/plain');
+      if (type && DEFAULT_SPECS[type]) {
+        const scale = getCanvasScale();
+        const rect = DOM.a4Paper.getBoundingClientRect();
+        const spec = DEFAULT_SPECS[type];
+        const dropX = Math.round(Math.max(10, Math.min((e.clientX - rect.left) / scale - spec.width / 2, 595 - spec.width - 10)));
+        const dropY = Math.round(Math.max(10, Math.min((e.clientY - rect.top) / scale - spec.height / 2, 842 - spec.height - 10)));
+        placeElement(type, dropX, dropY);
+      }
+    });
+
+    function updateToolboxCards() {
+      ['title', 'table', 'image', 'flowchart'].forEach(type => {
+        const card = document.getElementById(`card-${type}`);
+        const statusBadge = document.getElementById(`status-${type}`);
+        const isPlaced = !!AppState.placedElements[type];
+
+        if (isPlaced) {
+          card.classList.add('is-placed');
+          statusBadge.textContent = '✓ Di Kertas';
+          statusBadge.className = 'card-status-badge status-placed';
+        } else {
+          card.classList.remove('is-placed');
+          statusBadge.textContent = 'Siap Ditaruh';
+          statusBadge.className = 'card-status-badge status-ready';
+        }
+      });
+    }
+
+    /* ==========================================================================
+       FINE ADJUSTMENT CONTROLS
+       ========================================================================== */
+    function moveElementUp(type, event) {
+      if (event) event.stopPropagation();
+      const el = AppState.placedElements[type];
+      if (el) {
+        el.y = Math.max(15, el.y - 25);
+        renderElementDom(type);
+        evaluateLayout(false);
+      }
+    }
+
+    function moveElementDown(type, event) {
+      if (event) event.stopPropagation();
+      const el = AppState.placedElements[type];
+      if (el) {
+        el.y = Math.min(842 - el.height - 15, el.y + 25);
+        renderElementDom(type);
+        evaluateLayout(false);
+      }
+    }
+
+    function centerElement(type, event) {
+      if (event) event.stopPropagation();
+      const el = AppState.placedElements[type];
+      if (el) {
+        el.x = Math.round((595 - el.width) / 2);
+        renderElementDom(type);
+        evaluateLayout(false);
+        showToast('🎯', 'Elemen diratakan ke tengah.');
+      }
+    }
+
+    function toggleElementWidth(type, event) {
+      if (event) event.stopPropagation();
+      const el = AppState.placedElements[type];
+      if (el) {
+        if (el.width >= 540) {
+          el.width = 460;
+        } else {
+          el.width = 547;
+        }
+        el.x = Math.round((595 - el.width) / 2);
+        renderElementDom(type);
+        evaluateLayout(false);
+      }
+    }
+
+    /* ==========================================================================
+       EVALUATION & SCORING ENGINE
+       ========================================================================== */
+    function evaluateLayout(isExplicitCheck = true) {
+      const placed = AppState.placedElements;
+      const types = Object.keys(placed);
+      const theme = THEMES[AppState.currentTheme];
+      const targets = theme.targets;
+      const typed = AppState.typed;
+      const feedback = [];
+      let totalScore = 0;
+
+      document.querySelectorAll('.placed-element').forEach(n => {
+        n.classList.remove('is-overlapping', 'out-of-bounds');
+      });
+
+      // ----------------------------------------------------
+      // KRITERIA 1: KELENGKAPAN 4 ELEMEN (Maks 20 Poin)
+      // ----------------------------------------------------
+      const count = types.length;
+      const ptsComplete = Math.round((count / 4) * 20);
+      totalScore += ptsComplete;
+
+      const rubricComplete = document.getElementById('rubric-complete');
+      const iconComplete = document.getElementById('icon-complete');
+      const ptsCompleteEl = document.getElementById('pts-complete');
+
+      ptsCompleteEl.textContent = `${ptsComplete}/20`;
+      if (count === 4) {
+        rubricComplete.className = 'rubric-item passed';
+        iconComplete.textContent = '✅';
+      } else {
+        rubricComplete.className = 'rubric-item failed';
+        iconComplete.textContent = '❌';
+        const missing = [];
+        if (!placed['title']) missing.push('Judul Word');
+        if (!placed['table']) missing.push('Tabel Excel');
+        if (!placed['image']) missing.push('Tangkapan Layar');
+        if (!placed['flowchart']) missing.push('Diagram Alur');
+        feedback.push(`Belum lengkap! Letakkan elemen: ${missing.join(', ')}.`);
+      }
+
+      // ----------------------------------------------------
+      // KRITERIA 2: KETIK JUDUL, NAMA, KELAS & PENGANTAR (Maks 15 Poin)
+      // ----------------------------------------------------
+      let ptsTitle = 0;
+      const rubricTitle = document.getElementById('rubric-typing-title');
+      const iconTitle = document.getElementById('icon-typing-title');
+      const ptsTitleEl = document.getElementById('pts-typing-title');
+
+      // 1. Judul Laporan (5 Poin - Strict Capitalization)
+      if (checkMatch(typed.title, targets.title)) {
+        ptsTitle += 5;
+      } else if (placed['title']) {
+        if (isCaseOnlyMismatch(typed.title, targets.title)) {
+          feedback.push(`Perhatikan huruf kapital pada Judul! Tulis persis: "${targets.title}"`);
+        } else {
+          feedback.push(`Ketik judul: "${targets.title}"`);
+        }
+      }
+
+      // 2. Nama Penulis (3 Poin - Bebas/Mandiri dengan Huruf Kapital per Kata)
+      if (isNameProperlyCapitalized(typed.author)) {
+        ptsTitle += 3;
+      } else if (typed.author && typed.author.trim().length >= 2) {
+        ptsTitle += 1;
+        if (placed['title']) {
+          feedback.push('Awali setiap kata pada Nama Penulis dengan huruf kapital (misal: Budi Santoso)!');
+        }
+      } else if (placed['title']) {
+        feedback.push('Ketik nama lengkapmu sendiri pada kolom Nama Penulis.');
+      }
+
+      // 3. Kelas (2 Poin - Bebas/Mandiri)
+      if (typed.classGrade && typed.classGrade.trim().length >= 1) {
+        ptsTitle += 2;
+      } else if (placed['title']) {
+        feedback.push('Ketik kelasmu sendiri pada kolom Kelas (contoh: 8A atau VIII-1).');
+      }
+
+      // 4. Paragraf Pengantar (5 Poin - Strict Capitalization)
+      if (checkMatch(typed.intro, targets.intro)) {
+        ptsTitle += 5;
+      } else if (placed['title']) {
+        if (isCaseOnlyMismatch(typed.intro, targets.intro)) {
+          feedback.push(`Perhatikan huruf kapital pada Pengantar! Tulis persis: "${targets.intro}"`);
+        } else {
+          feedback.push(`Ketik pengantar: "${targets.intro}"`);
+        }
+      }
+
+      ptsTitleEl.textContent = `${ptsTitle}/15`;
+      totalScore += ptsTitle;
+
+      if (ptsTitle === 15) {
+        rubricTitle.className = 'rubric-item passed';
+        iconTitle.textContent = '✅';
+      } else if (ptsTitle > 0) {
+        rubricTitle.className = 'rubric-item failed';
+        iconTitle.textContent = '⚠️';
+      } else {
+        rubricTitle.className = 'rubric-item';
+        iconTitle.textContent = '⚪';
+      }
+
+      // ----------------------------------------------------
+      // KRITERIA 3: KETIK TABEL DATA EXCEL (Maks 20 Poin)
+      // ----------------------------------------------------
+      let ptsTable = 0;
+      const rubricTable = document.getElementById('rubric-typing-table');
+      const iconTable = document.getElementById('icon-typing-table');
+      const ptsTableEl = document.getElementById('pts-typing-table');
+
+      if (checkMatch(typed.tableCaption, targets.tableCaption)) ptsTable += 5;
+      else if (placed['table']) {
+        if (isCaseOnlyMismatch(typed.tableCaption, targets.tableCaption)) {
+          feedback.push(`Perhatikan huruf kapital pada Judul Tabel! Tulis: "${targets.tableCaption}"`);
+        } else {
+          feedback.push(`Ketik judul tabel: "${targets.tableCaption}"`);
+        }
+      }
+
+      let matchedCells = 0;
+      targets.tableRows.forEach((row, idx) => {
+        const tr = typed.tableRows[idx] || { col1: '', col2: '' };
+        if (checkMatch(tr.col1, row.col1)) matchedCells++;
+        if (checkMatch(tr.col2, row.col2)) matchedCells++;
+      });
+
+      // 10 cells total (5 rows x 2 cols), worth 15 points (1.5 pts each)
+      ptsTable += Math.round(matchedCells * 1.5);
+      ptsTable = Math.min(20, ptsTable);
+      ptsTableEl.textContent = `${ptsTable}/20`;
+      totalScore += ptsTable;
+
+      if (ptsTable === 20) {
+        rubricTable.className = 'rubric-item passed';
+        iconTable.textContent = '✅';
+      } else if (ptsTable > 0) {
+        rubricTable.className = 'rubric-item failed';
+        iconTable.textContent = '⚠️';
+        if (placed['table'] && matchedCells < 8) {
+          feedback.push(`Tabel baru terisi ${matchedCells}/8 kotak data. Lengkapi kolom lainnya!`);
+        }
+      } else {
+        rubricTable.className = 'rubric-item';
+        iconTable.textContent = '⚪';
+      }
+
+      // ----------------------------------------------------
+      // KRITERIA 4: KETIK KETERANGAN GAMBAR (Maks 15 Poin)
+      // ----------------------------------------------------
+      let ptsImage = 0;
+      const rubricImage = document.getElementById('rubric-typing-image');
+      const iconImage = document.getElementById('icon-typing-image');
+      const ptsImageEl = document.getElementById('pts-typing-image');
+
+      if (checkMatch(typed.imageCaption, targets.imageCaption)) {
+        ptsImage = 15;
+        rubricImage.className = 'rubric-item passed';
+        iconImage.textContent = '✅';
+      } else {
+        if (placed['image']) {
+        if (isCaseOnlyMismatch(typed.imageCaption, targets.imageCaption)) {
+          feedback.push(`Perhatikan huruf kapital Keterangan Gambar! Tulis: "${targets.imageCaption}"`);
+        } else {
+          feedback.push(`Ketik keterangan gambar: "${targets.imageCaption}"`);
+        }
+      }
+        rubricImage.className = 'rubric-item failed';
+        iconImage.textContent = ptsImage > 0 ? '⚠️' : '⚪';
+      }
+      ptsImageEl.textContent = `${ptsImage}/15`;
+      totalScore += ptsImage;
+
+      // ----------------------------------------------------
+      // KRITERIA 5: KETIK 4 KOTAK ALUR DIAGRAM (Maks 15 Poin)
+      // ----------------------------------------------------
+      let ptsFlow = 0;
+      const rubricFlow = document.getElementById('rubric-diagram-steps');
+      const iconFlow = document.getElementById('icon-diagram-steps');
+      const ptsFlowEl = document.getElementById('pts-diagram-steps');
+
+      if (checkMatch(typed.flowchartCaption, targets.flowchartCaption)) ptsFlow += 3;
+      else if (placed['flowchart']) {
+        if (isCaseOnlyMismatch(typed.flowchartCaption, targets.flowchartCaption)) {
+          feedback.push(`Perhatikan huruf kapital Judul Bagan! Tulis: "${targets.flowchartCaption}"`);
+        } else {
+          feedback.push(`Ketik judul bagan: "${targets.flowchartCaption}"`);
+        }
+      }
+
+      let matchedSteps = 0;
+      targets.flowchartSteps.forEach((st, idx) => {
+        if (checkMatch(typed.flowchartSteps[idx], st)) matchedSteps++;
+      });
+
+      // 4 steps, worth 3 points each = 12 points
+      ptsFlow += (matchedSteps * 3);
+      ptsFlowEl.textContent = `${ptsFlow}/15`;
+      totalScore += ptsFlow;
+
+      if (ptsFlow === 15) {
+        rubricFlow.className = 'rubric-item passed';
+        iconFlow.textContent = '✅';
+      } else if (ptsFlow > 0) {
+        rubricFlow.className = 'rubric-item failed';
+        iconFlow.textContent = '⚠️';
+        if (placed['flowchart'] && matchedSteps < 4) {
+          feedback.push(`Diagram alur baru cocok ${matchedSteps}/4 kotak.`);
+        }
+      } else {
+        rubricFlow.className = 'rubric-item';
+        iconFlow.textContent = '⚪';
+      }
+
+      // ----------------------------------------------------
+      // KRITERIA 6: TATA LETAK, MARGIN & JARAK (Maks 15 Poin)
+      // ----------------------------------------------------
+      let ptsLayout = 15;
+      const rubricLayout = document.getElementById('rubric-layout');
+      const iconLayout = document.getElementById('icon-layout');
+      const ptsLayoutEl = document.getElementById('pts-layout');
+
+      // Check title position
+      if (placed['title'] && placed['title'].y > 110) {
+        ptsLayout -= 5;
+        feedback.push('Pindahkan judul laporan ke bagian paling atas kertas!');
+      }
+
+      // Check margin
+      let marginFaults = 0;
+      types.forEach(type => {
+        const el = placed[type];
+        if (el.x < 15 || el.x + el.width > 580 || el.y < 18 || el.y + el.height > 825) {
+          marginFaults++;
+          const node = document.getElementById(`placed-${type}`);
+          if (node) node.classList.add('out-of-bounds');
+        }
+      });
+      if (marginFaults > 0) {
+        ptsLayout -= Math.min(5, marginFaults * 3);
+        feedback.push('Ada elemen yang menabrak batas margin kertas.');
+      }
+
+      // Check overlap
+      let overlapFaults = 0;
+      for (let i = 0; i < types.length; i++) {
+        for (let j = i + 1; j < types.length; j++) {
+          const a = placed[types[i]];
+          const b = placed[types[j]];
+          const overlapX = (a.x < b.x + b.width) && (a.x + a.width > b.x);
+          const overlapY = (a.y < b.y + b.height - 10) && (a.y + a.height - 10 > b.y);
+
+          if (overlapX && overlapY) {
+            overlapFaults++;
+            const nodeA = document.getElementById(`placed-${types[i]}`);
+            const nodeB = document.getElementById(`placed-${types[j]}`);
+            if (nodeA) nodeA.classList.add('is-overlapping');
+            if (nodeB) nodeB.classList.add('is-overlapping');
+            feedback.push(`${getElementTitle(types[i])} dan ${getElementTitle(types[j])} saling menimpa! Beri jarak.`);
+          }
+        }
+      }
+      if (overlapFaults > 0) {
+        ptsLayout -= Math.min(5, overlapFaults * 5);
+      }
+
+      if (types.length === 0) ptsLayout = 0;
+      ptsLayout = Math.max(0, ptsLayout);
+      ptsLayoutEl.textContent = `${ptsLayout}/15`;
+      totalScore += ptsLayout;
+
+      if (types.length > 0 && ptsLayout >= 13) {
+        rubricLayout.className = 'rubric-item passed';
+        iconLayout.textContent = '✅';
+      } else if (types.length > 0) {
+        rubricLayout.className = 'rubric-item failed';
+        iconLayout.textContent = '⚠️';
+      } else {
+        rubricLayout.className = 'rubric-item';
+        iconLayout.textContent = '⚪';
+      }
+
+      // Bonus kecepatan waktu jika skor bagus
+      let timeBonus = 0;
+      if (!AppState.timer.isUnlimited && AppState.timer.remainingSeconds > 0 && totalScore >= 70) {
+        timeBonus = Math.min(10, Math.floor(AppState.timer.remainingSeconds / 20));
+      }
+
+      totalScore = Math.max(0, Math.min(100, totalScore + timeBonus));
+      AppState.lastScore = totalScore;
+
+      DOM.scoreNumber.textContent = totalScore;
+      let stars = '☆☆☆';
+      let badgeText = 'Perancang Pemula';
+      let badgeClass = 'score-badge-pill badge-bronze';
+
+      if (totalScore >= 85) {
+        stars = '⭐⭐⭐';
+        badgeText = 'Lencana Emas: Kreator Mahir';
+        badgeClass = 'score-badge-pill badge-gold';
+      } else if (totalScore >= 70) {
+        stars = '⭐⭐☆';
+        badgeText = 'Lencana Perak: Kreator Cakap';
+        badgeClass = 'score-badge-pill badge-silver';
+      } else if (totalScore >= 40) {
+        stars = '⭐☆☆';
+        badgeText = 'Lencana Perunggu: Perancang Pemula';
+        badgeClass = 'score-badge-pill badge-bronze';
+      } else {
+        stars = '☆☆☆';
+        badgeText = 'Belum Memenuhi Syarat';
+        badgeClass = 'score-badge-pill';
+      }
+
+      DOM.scoreStars.textContent = stars;
+      DOM.scoreBadge.textContent = badgeText;
+      DOM.scoreBadge.className = badgeClass;
+
+      if (feedback.length === 0 && totalScore >= 85) {
+        DOM.feedbackList.innerHTML = `<li style="color:#059669;">🎉 Luar biasa! Seluruh teks dan tabel terisi rapi sesuai panduan!</li>`;
+      } else if (feedback.length === 0) {
+        DOM.feedbackList.innerHTML = `<li>Lanjutkan merancang dan mengetik teks sesuai panduan di setiap kotak.</li>`;
+      } else {
+        DOM.feedbackList.innerHTML = feedback.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+      }
+
+      if (isExplicitCheck) {
+        if (window.innerWidth <= 1100) {
+          toggleMobileTab('inspector');
+        }
+
+        if (totalScore >= 85) {
+          SoundFx.playSuccess();
+          setMascotReaction('celebrate', `Hebat sekali! Skor kamu <b>${totalScore}</b>! Laporan informatikamu rapi dan seluruh data terisi lengkap! 🌟`);
+          openResultModal(totalScore, 'gold', feedback);
+        } else if (totalScore >= 70) {
+          SoundFx.playPop();
+          setMascotReaction('happy', `Sudah bagus! Skor kamu <b>${totalScore}</b>. Cek saran perbaikan di kotak kuning untuk meraih Bintang 3!`);
+          openResultModal(totalScore, 'silver', feedback);
+        } else {
+          SoundFx.playWarning();
+          setMascotReaction('thinking', `Skor kamu <b>${totalScore}</b>. Masih ada teks yang belum cocok atau kotak yang kosong. Yuk periksa lagi! 💪`);
+          openResultModal(totalScore, 'bronze', feedback);
+        }
+      }
+    }
+
+    DOM.btnCheckLayout.addEventListener('click', () => {
+      evaluateLayout(true);
+    });
+
+    /* ==========================================================================
+       MASCOT SPEECH & REACTIONS
+       ========================================================================== */
+    function setMascotReaction(mood, message) {
+      DOM.mascotAvatar.innerHTML = SvgAssets.getMascotSvg(mood);
+      DOM.mascotMessage.innerHTML = message;
+    }
+
+    /* ==========================================================================
+       AUTO-ARRANGE & IDEAL LAYOUT
+       ========================================================================== */
+    function applyIdealLayout() {
+      cancelTapMode();
+      AppState.placedElements['title'] = {
+        id: 'title', type: 'title',
+        x: 24, y: 24, width: 547, height: 165
+      };
+
+      AppState.placedElements['table'] = {
+        id: 'table', type: 'table',
+        x: 24, y: 198, width: 547, height: 255
+      };
+
+      AppState.placedElements['image'] = {
+        id: 'image', type: 'image',
+        x: 24, y: 462, width: 547, height: 130
+      };
+
+      AppState.placedElements['flowchart'] = {
+        id: 'flowchart', type: 'flowchart',
+        x: 24, y: 602, width: 547, height: 110
+      };
+
+      SoundFx.playSuccess();
+      renderAllPlacedElements();
+      updateToolboxCards();
+      evaluateLayout(false);
+      showToast('✨', 'Semua 4 elemen tersusun pas dan rapi!');
+    }
+
+    DOM.btnAutoArrange.addEventListener('click', applyIdealLayout);
+
+    // ZOOM TOOLBAR BUTTONS
+    if (DOM.btnZoomFit) {
+      DOM.btnZoomFit.addEventListener('click', () => {
+        autoFitPaper();
+        showToast('🎯', 'Tampilan disesuaikan pas satu layar.');
+      });
+    }
+    if (DOM.btnZoom100) {
+      DOM.btnZoom100.addEventListener('click', () => {
+        setCanvasScale(1.0, false);
+        showToast('🔍', 'Tampilan 100% ukuran asli.');
+      });
+    }
+    if (DOM.btnZoomIn) {
+      DOM.btnZoomIn.addEventListener('click', () => {
+        zoomIn();
+      });
+    }
+    if (DOM.btnZoomOut) {
+      DOM.btnZoomOut.addEventListener('click', () => {
+        zoomOut();
+      });
+    }
+
+    window.addEventListener('resize', () => {
+      if (AppState.isFitZoom) {
+        autoFitPaper();
+      }
+    });
+
+
+    /* ==========================================================================
+       MODALS MANAGEMENT
+       ========================================================================== */
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    DOM.btnHelp.addEventListener('click', () => openModal('modalHelp'));
+    DOM.btnExample.addEventListener('click', () => openModal('modalExample'));
+    DOM.btnOpenTimerModal.addEventListener('click', () => openModal('modalTimer'));
+    DOM.btnTimerToggle.addEventListener('click', toggleTimer);
+
+    function openResultModal(score, badgeType, feedback) {
+      document.getElementById('resultScore').textContent = `${score}/100`;
+      document.getElementById('resultBadgeGraphic').innerHTML = SvgAssets.getBadgeSvg(badgeType);
+      
+      const titleEl = document.getElementById('resultTitle');
+      const starsEl = document.getElementById('resultStars');
+      const feedbackEl = document.getElementById('resultFeedback');
+      const notesEl = document.getElementById('resultNotes');
+
+      if (badgeType === 'gold') {
+        titleEl.textContent = 'Kreator Konten Digital Mahir!';
+        starsEl.textContent = '⭐⭐⭐';
+        feedbackEl.textContent = 'Luar biasa! Tata letak laporan informatikamu teratur, simetris, dan seluruh teks serta tabel terisi lengkap!';
+        notesEl.textContent = 'Semua 4 elemen lengkap, tidak ada yang tumpang tindih, margin aman terjaga, dan data tabel terisi rapi.';
+      } else if (badgeType === 'silver') {
+        titleEl.textContent = 'Kreator Konten Digital Cakap!';
+        starsEl.textContent = '⭐⭐☆';
+        feedbackEl.textContent = 'Rancanganmu sudah cukup baik! Sedikit lagi teks diketik lengkap dan jarak dirapikan untuk nilai 100.';
+        notesEl.textContent = feedback.length > 0 ? feedback.join(' • ') : 'Tingkatkan kerapian dan jarak simetris antar komponen.';
+      } else {
+        titleEl.textContent = 'Perancang Konten Pemula';
+        starsEl.textContent = '⭐☆☆';
+        feedbackEl.textContent = 'Masih ada beberapa teks yang belum cocok atau elemen yang bertumpuk. Yuk perbaiki!';
+        notesEl.textContent = feedback.length > 0 ? feedback.join(' • ') : 'Pastikan seluruh 4 elemen telah diletakkan dan diketik.';
+      }
+
+      openModal('modalResult');
+    }
+
+    /* ==========================================================================
+       CANVAS PNG EXPORTER & NATIVE PRINT
+       ========================================================================== */
+    function downloadReportImage() {
+      const canvas = document.getElementById('exportCanvas');
+      const ctx = canvas.getContext('2d');
+      const theme = THEMES[AppState.currentTheme];
+      const targets = theme.targets;
+      const typed = AppState.typed;
+
+      const scaleFactor = 2;
+      canvas.width = 595 * scaleFactor;
+      canvas.height = 842 * scaleFactor;
+
+      ctx.save();
+      ctx.scale(scaleFactor, scaleFactor);
+
+      // White paper background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 595, 842);
+
+      // Outer Paper Border
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(0, 0, 595, 842);
+
+      // Margin line
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.strokeRect(24, 24, 547, 794);
+      ctx.setLineDash([]);
+
+      // Draw placed elements
+      Object.keys(AppState.placedElements).forEach(type => {
+        const el = AppState.placedElements[type];
+
+        if (type === 'title') {
+          const docTitle = typed.title.trim() || targets.title;
+          const author = typed.author.trim() || targets.author;
+          const classGrade = typed.classGrade.trim() || targets.classGrade;
+          const intro = typed.intro.trim() || targets.intro;
+
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 1.5;
+          roundRect(ctx, el.x, el.y, el.width, el.height, 6, true, true);
+
+          ctx.fillStyle = '#dbeafe';
+          roundRect(ctx, el.x + 14, el.y + 8, 220, 16, 4, true, false);
+          ctx.fillStyle = '#1e40af';
+          ctx.font = 'bold 9px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText('📄 DOKUMEN PENGOLAH KATA (MS WORD)', el.x + 20, el.y + 20);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(docTitle, el.x + el.width / 2, el.y + 44);
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'italic 10px sans-serif';
+          ctx.fillText('Penulis: ' + author + ' | ' + classGrade, el.x + el.width / 2, el.y + 62);
+
+          ctx.strokeStyle = '#f1f5f9';
+          ctx.beginPath();
+          ctx.moveTo(el.x + 20, el.y + 70);
+          ctx.lineTo(el.x + el.width - 20, el.y + 70);
+          ctx.stroke();
+
+          ctx.fillStyle = '#334155';
+          ctx.font = '9.5px sans-serif';
+          ctx.textAlign = 'left';
+          wrapText(ctx, 'Pengantar Informatika: ' + intro, el.x + 16, el.y + 88, el.width - 32, 13);
+
+        } else if (type === 'table') {
+          const caption = typed.tableCaption.trim() || targets.tableCaption;
+
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1.5;
+          roundRect(ctx, el.x, el.y, el.width, el.height, 6, true, true);
+
+          ctx.fillStyle = '#065f46';
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(caption, el.x + 12, el.y + 18);
+
+          const col1W = 35;
+          const col2W = 240;
+          const col3W = (el.width - 24) - col1W - col2W;
+          const tableTop = el.y + 24;
+
+          // Header
+          ctx.fillStyle = '#107c41';
+          ctx.fillRect(el.x + 12, tableTop, el.width - 24, 20);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 8.5px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('No', el.x + 12 + col1W / 2, tableTop + 13);
+          ctx.fillText('Nama Komponen / Lokasi / Kategori', el.x + 12 + col1W + col2W / 2, tableTop + 13);
+          ctx.fillText('Fungsi / Status / Keterangan', el.x + 12 + col1W + col2W + col3W / 2, tableTop + 13);
+
+          // 5 Rows
+          const rowH = 22;
+          targets.tableRows.forEach((r, rIdx) => {
+            const rowY = tableTop + 20 + (rIdx * rowH);
+            const trTyped = typed.tableRows[rIdx] || { col1: '', col2: '' };
+            const c1 = trTyped.col1.trim() || r.col1;
+            const c2 = trTyped.col2.trim() || r.col2;
+
+            ctx.fillStyle = rIdx % 2 === 0 ? '#ffffff' : '#f0fdf4';
+            ctx.fillRect(el.x + 12, rowY, el.width - 24, rowH);
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.strokeRect(el.x + 12, rowY, el.width - 24, rowH);
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 8.5px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(String(rIdx + 1), el.x + 12 + col1W / 2, rowY + 14);
+
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '8.5px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(c1, el.x + 12 + col1W + 8, rowY + 14);
+            ctx.fillText(c2, el.x + 12 + col1W + col2W + 8, rowY + 14);
+          });
+
+        } else if (type === 'image') {
+          const caption = typed.imageCaption.trim() || targets.imageCaption;
+          const analysis = typed.imageAnalysis.trim() || targets.imageAnalysis;
+
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1.5;
+          roundRect(ctx, el.x, el.y, el.width, el.height, 6, true, true);
+
+          ctx.fillStyle = '#0f172a';
+          roundRect(ctx, el.x + 12, el.y + 10, el.width - 24, el.height - 48, 4, true, false);
+
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('[TANGKAPAN LAYAR: ' + theme.name.toUpperCase() + ']', el.x + el.width / 2, el.y + 60);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '9.5px sans-serif';
+          ctx.fillText('Laboratorium Informatika SMP Kelas VIII • Dokumentasi Hasil Praktikum', el.x + el.width / 2, el.y + 80);
+
+          ctx.fillStyle = '#1e293b';
+          ctx.font = 'bold 9.5px sans-serif';
+          ctx.fillText('✂️ ' + caption, el.x + el.width / 2, el.y + el.height - 24);
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'italic 8.5px sans-serif';
+          ctx.fillText('Catatan: ' + analysis, el.x + el.width / 2, el.y + el.height - 10);
+
+        } else if (type === 'flowchart') {
+          const caption = typed.flowchartCaption.trim() || targets.flowchartCaption;
+          const summary = typed.flowchartSummary.trim() || targets.flowchartSummary;
+          const steps = targets.flowchartSteps;
+
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1.5;
+          roundRect(ctx, el.x, el.y, el.width, el.height, 6, true, true);
+
+          ctx.fillStyle = '#581c87';
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText('🔀 ' + caption, el.x + 12, el.y + 18);
+
+          const boxW = 105;
+          const boxH = 46;
+          const gap = 20;
+          const startX = el.x + 18;
+          const boxY = el.y + 28;
+
+          steps.forEach((s, idx) => {
+            const bx = startX + idx * (boxW + gap);
+            const stepVal = (typed.flowchartSteps[idx] || '').trim() || s;
+
+            ctx.fillStyle = '#f5f3ff';
+            ctx.strokeStyle = '#7c3aed';
+            ctx.lineWidth = 1.5;
+            roundRect(ctx, bx, boxY, boxW, boxH, 6, true, true);
+
+            ctx.fillStyle = '#6d28d9';
+            ctx.font = 'bold 8px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('TAHAP ' + (idx + 1), bx + boxW / 2, boxY + 16);
+
+            ctx.fillStyle = '#1e1b4b';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.fillText(stepVal, bx + boxW / 2, boxY + 34);
+
+            if (idx < 3) {
+              const arrowX = bx + boxW + 4;
+              ctx.fillStyle = '#7c3aed';
+              ctx.font = 'bold 14px sans-serif';
+              ctx.textAlign = 'left';
+              ctx.fillText('➔', arrowX, boxY + 28);
+            }
+          });
+
+          ctx.fillStyle = '#475569';
+          ctx.font = 'italic 8.5px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Alur: ' + summary, el.x + el.width / 2, el.y + el.height - 10);
+        }
+      });
+
+      // Watermark & Footer
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(theme.footerText, 24, 832);
+      ctx.textAlign = 'right';
+      ctx.fillText('Halaman 1 dari 1', 571, 832);
+
+      ctx.restore();
+
+      // Trigger download PNG
+      const link = document.createElement('a');
+      link.download = 'Laporan_Informatika_' + AppState.currentTheme + '_Kelas8.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      SoundFx.playSuccess();
+      showToast('📥', 'Gambar rancangan berhasil diunduh (PNG)!');
+    }
+
+    function buildPrintHtml() {
+      const printEl = document.getElementById('printContainer');
+      if (!printEl) return;
+
+      const theme = THEMES[AppState.currentTheme];
+      const targets = theme.targets;
+      const typed = AppState.typed;
+
+      const docTitle = typed.title.trim() || targets.title;
+      const docAuthor = typed.author.trim() || targets.author;
+      const docClass = typed.classGrade.trim() || targets.classGrade;
+      const docIntro = typed.intro.trim() || targets.intro;
+      const tableCaption = typed.tableCaption.trim() || targets.tableCaption;
+      const imageCaption = typed.imageCaption.trim() || targets.imageCaption;
+      const imageAnalysis = typed.imageAnalysis.trim() || targets.imageAnalysis;
+      const flowchartCaption = typed.flowchartCaption.trim() || targets.flowchartCaption;
+      const flowchartSummary = typed.flowchartSummary.trim() || targets.flowchartSummary;
+
+      let svgGraphic = '';
+      if (theme.svgType === 'hardware') svgGraphic = SvgAssets.getHardwareSvg();
+      else if (theme.svgType === 'network') svgGraphic = SvgAssets.getNetworkSvg();
+      else if (theme.svgType === 'security') svgGraphic = SvgAssets.getSecuritySvg();
+      else if (theme.svgType === 'software') svgGraphic = SvgAssets.getSoftwareSvg();
+      else svgGraphic = SvgAssets.getAlgorithmSvg();
+
+      const rowsHtml = targets.tableRows.map((r, idx) => {
+        const trTyped = typed.tableRows[idx] || { col1: '', col2: '' };
+        const c1 = trTyped.col1.trim() || r.col1;
+        const c2 = trTyped.col2.trim() || r.col2;
+        return `
+          <tr>
+            <td style="text-align:center; font-weight:bold;">${idx + 1}</td>
+            <td style="text-align:left; font-weight:600; padding-left:12px;">${escapeHtml(c1)}</td>
+            <td style="text-align:left; padding-left:12px;">${escapeHtml(c2)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const steps = targets.flowchartSteps.map((s, idx) => {
+        const sTyped = (typed.flowchartSteps[idx] || '').trim();
+        return sTyped || s;
+      });
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+
+      printEl.innerHTML = `
+        <div class="print-header">
+          <div class="print-school-title">LAPORAN PRAKTIKUM INFORMATIKA DASAR</div>
+          <div class="print-school-sub">Integrasi Dokumen Pengolah Kata (Word), Lembar Kerja (Excel), Cuplikan Layar & Diagram Alur</div>
+          <div class="print-header-line"></div>
+        </div>
+
+        <!-- Word Section -->
+        <div class="print-section print-word-block">
+          <div class="print-title">${escapeHtml(docTitle)}</div>
+          <div class="print-author">Disusun Oleh: ${escapeHtml(docAuthor)} • Kelas: ${escapeHtml(docClass)}</div>
+          <div class="print-intro">${escapeHtml(docIntro)}. Laporan ini disusun untuk memenuhi tugas integrasi aplikasi perkantoran pada mata pelajaran Informatika SMP Kelas VIII.</div>
+        </div>
+
+        <!-- Excel Section -->
+        <div class="print-section print-excel-block">
+          <div class="print-caption"><strong>Tabel 1.1</strong> ${escapeHtml(tableCaption)}</div>
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th style="width: 10%;">No</th>
+                <th style="width: 45%;">Nama Komponen / Lokasi / Kategori</th>
+                <th style="width: 45%;">Fungsi / Status / Keterangan</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Snipping Tool Section -->
+        <div class="print-section print-image-block">
+          <div class="print-image-frame">
+            ${svgGraphic}
+          </div>
+          <div class="print-caption-center"><strong>Gambar 1.1</strong> ${escapeHtml(imageCaption)}</div>
+          <div style="font-size: 8.5pt; text-align: center; color: #334155; margin-top: 2px;">
+            <em>Analisis: ${escapeHtml(imageAnalysis)}</em>
+          </div>
+        </div>
+
+        <!-- Shapes Flowchart Section -->
+        <div class="print-section print-flowchart-block">
+          <div class="print-caption"><strong>Bagan 1.1</strong> ${escapeHtml(flowchartCaption)}</div>
+          <div class="print-flow-row">
+            <div class="print-flow-box">
+              <small style="font-size:7pt; display:block; color:#6b21a8;">Tahap 1</small>
+              <span>${escapeHtml(steps[0])}</span>
+            </div>
+            <div class="print-flow-arrow">➔</div>
+            <div class="print-flow-box">
+              <small style="font-size:7pt; display:block; color:#6b21a8;">Tahap 2</small>
+              <span>${escapeHtml(steps[1])}</span>
+            </div>
+            <div class="print-flow-arrow">➔</div>
+            <div class="print-flow-box">
+              <small style="font-size:7pt; display:block; color:#6b21a8;">Tahap 3</small>
+              <span>${escapeHtml(steps[2])}</span>
+            </div>
+            <div class="print-flow-arrow">➔</div>
+            <div class="print-flow-box">
+              <small style="font-size:7pt; display:block; color:#6b21a8;">Tahap 4</small>
+              <span>${escapeHtml(steps[3])}</span>
+            </div>
+          </div>
+          <div style="font-size: 8pt; text-align: center; color: #475569; margin-top: 4px;">
+            <em>Catatan Alur: ${escapeHtml(flowchartSummary)}</em>
+          </div>
+        </div>
+
+        <!-- Print Footer -->
+        <div class="print-footer">
+          <div class="print-footer-line"></div>
+          <div class="print-footer-content">
+            <span>Materi: ${escapeHtml(theme.name)}</span>
+            <span>Tanggal Dicetak: ${dateStr}</span>
+            <span>Lembar Portofolio Siswa • Hal 1 dari 1</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function printReport() {
+      buildPrintHtml();
+      window.print();
+    }
+    window.addEventListener('beforeprint', buildPrintHtml);
+
+    /* ==========================================================================
+       RANDOM THEME & WELCOME START CHALLENGE (5 INFORMATIKA THEMES)
+       ========================================================================== */
+    const THEME_KEYS = ['hardware', 'jaringan', 'keamanan', 'software', 'algoritma'];
+    const THEME_DESCRIPTIONS = {
+      hardware: {
+        icon: '🖥️',
+        title: 'Perangkat Keras Komputer (Hardware)',
+        desc: 'Menyusun laporan tentang komponen CPU, RAM DDR4, SSD, Monitor, dan alur pemrosesan data (Input - Proses - Simpan - Output).'
+      },
+      jaringan: {
+        icon: '🌐',
+        title: 'Jaringan Komputer dan Internet',
+        desc: 'Menyusun laporan tentang Router Wifi, LAN, uji kecepatan internet lab komputer, dan alur pengiriman paket data.'
+      },
+      keamanan: {
+        icon: '🔒',
+        title: 'Keamanan Akun Digital Pribadi',
+        desc: 'Menyusun laporan evaluasi kekuatan kata sandi, verifikasi dua langkah (2FA), dan proteksi data digital pribadi.'
+      },
+      software: {
+        icon: '💻',
+        title: 'Perangkat Lunak dan Sistem Operasi',
+        desc: 'Menyusun laporan tentang sistem operasi komputer, aplikasi perkantoran, peramban web, dan alur eksekusi program.'
+      },
+      algoritma: {
+        icon: '🧩',
+        title: 'Algoritma dan Pemrograman Dasar',
+        desc: 'Menyusun laporan tentang logika pemrograman, variabel, pengkondisian jika, perulangan loop, dan alur algoritma komputer.'
+      }
+    };
+
+    let currentWelcomeTheme = 'hardware';
+    let currentWelcomeDuration = 180;
+    let isWelcomeUnlimited = false;
+
+    function rollRandomTheme() {
+      const otherThemes = THEME_KEYS.filter(k => k !== currentWelcomeTheme);
+      currentWelcomeTheme = otherThemes[Math.floor(Math.random() * otherThemes.length)] || THEME_KEYS[0];
+      updateWelcomeThemeDisplay();
+      SoundFx.playPop();
+    }
+
+    function updateWelcomeThemeDisplay() {
+      const info = THEME_DESCRIPTIONS[currentWelcomeTheme];
+      const iconEl = document.getElementById('welcomeThemeIcon');
+      const titleEl = document.getElementById('welcomeThemeTitle');
+      const descEl = document.getElementById('welcomeThemeDesc');
+      if (iconEl) iconEl.textContent = info.icon;
+      if (titleEl) titleEl.textContent = info.title;
+      if (descEl) descEl.textContent = info.desc;
+    }
+
+    function selectWelcomePreset(seconds, btn) {
+      document.querySelectorAll('#modalWelcome .preset-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      if (seconds === 0) {
+        isWelcomeUnlimited = true;
+        currentWelcomeDuration = 0;
+        const minEl = document.getElementById('welcomeMinutesInput');
+        const secEl = document.getElementById('welcomeSecondsInput');
+        if (minEl) minEl.value = 0;
+        if (secEl) secEl.value = 0;
+      } else {
+        isWelcomeUnlimited = false;
+        currentWelcomeDuration = seconds;
+        const minEl = document.getElementById('welcomeMinutesInput');
+        const secEl = document.getElementById('welcomeSecondsInput');
+        if (minEl) minEl.value = Math.floor(seconds / 60);
+        if (secEl) secEl.value = seconds % 60;
+      }
+      SoundFx.playPop();
+    }
+
+    function startChallengeFromWelcome() {
+      const minVal = parseInt(document.getElementById('welcomeMinutesInput').value, 10) || 0;
+      const secVal = parseInt(document.getElementById('welcomeSecondsInput').value, 10) || 0;
+      const totalSec = (minVal * 60) + secVal;
+
+      let finalDuration = currentWelcomeDuration;
+      let isUnlimited = isWelcomeUnlimited;
+
+      if (totalSec > 0 && !isWelcomeUnlimited) {
+        finalDuration = totalSec;
+      } else if (totalSec === 0) {
+        isUnlimited = true;
+        finalDuration = 0;
+      }
+
+      // Apply the randomly picked theme
+      setAppTheme(currentWelcomeTheme);
+
+      // Reset workspace
+      AppState.placedElements = {};
+      AppState.selectedElementId = null;
+      AppState.typed = {
+        title: '', author: '', classGrade: '', intro: '', tableCaption: '',
+        tableRows: [
+          { col1: '', col2: '' }, { col1: '', col2: '' },
+          { col1: '', col2: '' }, { col1: '', col2: '' },
+          { col1: '', col2: '' }
+        ],
+        imageCaption: '', imageAnalysis: '',
+        flowchartCaption: '', flowchartSteps: ['', '', '', ''],
+        flowchartSummary: ''
+      };
+      renderAllPlacedElements();
+      updateToolboxCards();
+      evaluateLayout(false);
+
+      resetTimer(finalDuration, isUnlimited);
+      closeModal('modalWelcome');
+      setMascotReaction('happy', `Selamat datang di tantangan <b>${THEMES[currentWelcomeTheme].name}</b>! Letakkan elemen ke kertas.`);
+      showToast('🚀', 'Tantangan dimulai! Semangat merancang.');
+    }
+
+    DOM.btnReset.addEventListener('click', () => {
+      if (confirm('Mulai ulang rancangan dari awal? Semua elemen yang diletakkan dan teks akan dibersihkan.')) {
+        AppState.placedElements = {};
+        AppState.selectedElementId = null;
+        AppState.typed = {
+          title: '', author: '', classGrade: '', intro: '', tableCaption: '',
+          tableRows: [
+            { col1: '', col2: '' }, { col1: '', col2: '' },
+            { col1: '', col2: '' }, { col1: '', col2: '' },
+            { col1: '', col2: '' }
+          ],
+          imageCaption: '', imageAnalysis: '',
+          flowchartCaption: '', flowchartSteps: ['', '', '', ''],
+          flowchartSummary: ''
+        };
+        renderAllPlacedElements();
+        updateToolboxCards();
+        evaluateLayout(false);
+        resetTimer(AppState.timer.durationSeconds, AppState.timer.isUnlimited);
+        setMascotReaction('happy', 'Kertas telah bersih kembali! Yuk susun dan ketik lagi.');
+        showToast('🔄', 'Rancangan dimulai ulang.');
+      }
+    });
+
+    DOM.btnAudioToggle.addEventListener('click', () => {
+      AppState.soundEnabled = !AppState.soundEnabled;
+      DOM.btnAudioToggle.textContent = AppState.soundEnabled ? '🔊' : '🔇';
+      showToast(AppState.soundEnabled ? '🔊' : '🔇', `Suara efek: ${AppState.soundEnabled ? 'Aktif' : 'Hening'}`);
+    });
+
+    DOM.btnToggleMargin.addEventListener('click', () => {
+      AppState.marginVisible = !AppState.marginVisible;
+      DOM.marginGuide.classList.toggle('hidden', !AppState.marginVisible);
+      DOM.btnToggleMargin.innerHTML = `<span>📏 Batas Margin: ${AppState.marginVisible ? 'ON' : 'OFF'}</span>`;
+      DOM.btnToggleMargin.classList.toggle('active', AppState.marginVisible);
+    });
+
+    /* ==========================================================================
+       MOBILE RESPONSIVE TABS
+       ========================================================================== */
+    function toggleMobileTab(tab) {
+      AppState.activeMobileTab = tab;
+      document.querySelectorAll('.mobile-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`mTab${tab.charAt(0).toUpperCase() + tab.slice(1)}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (tab === 'palette') {
+        DOM.toolboxPanel.classList.add('mobile-open');
+        DOM.inspectorSidebar.classList.remove('mobile-open');
+      } else if (tab === 'inspector') {
+        DOM.inspectorSidebar.classList.add('mobile-open');
+        DOM.toolboxPanel.classList.remove('mobile-open');
+      } else {
+        DOM.toolboxPanel.classList.remove('mobile-open');
+        DOM.inspectorSidebar.classList.remove('mobile-open');
+      }
+    }
+
+    /* ==========================================================================
+       TOAST NOTIFICATION
+       ========================================================================== */
+    let toastTimeout = null;
+    function showToast(icon, message) {
+      DOM.toastIcon.textContent = icon;
+      DOM.toastMsg.textContent = message;
+      DOM.toastPill.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        DOM.toastPill.classList.remove('show');
+      }, 2600);
+    }
+
+    function escapeHtml(str) {
+      if (str === undefined || str === null) return '';
+      if (typeof str !== 'string') return String(str);
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    /* ==========================================================================
+       STARTUP LIFECYCLE
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      // Pick initial random theme from 5 themes
+      currentWelcomeTheme = THEME_KEYS[Math.floor(Math.random() * THEME_KEYS.length)];
+      setAppTheme(currentWelcomeTheme);
+      updateWelcomeThemeDisplay();
+      updateToolboxCards();
+      evaluateLayout(false);
+
+      // Default zoom is 100% as requested
+      setCanvasScale(1.0, false);
+
+      // Open welcome challenge modal on startup
+      openModal('modalWelcome');
+    });
+  
+    /* ==========================================================================
+       PROGRESSIVE WEB APP (PWA) SERVICE WORKER & OFFLINE REGISTRATION
+       ========================================================================== */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            console.log('[PWA] Service Worker aktif untuk mode offline:', reg.scope);
+          })
+          .catch((err) => {
+            console.log('[PWA] Service worker info:', err);
+          });
+      });
+    }
+
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      const installBtn = document.getElementById('btnInstallPwa');
+      if (installBtn) installBtn.style.display = 'inline-flex';
+    });
+
+    function installPwaApp() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') {
+            showToast('📲', 'Aplikasi berhasil dipasang di perangkat!');
+          }
+          deferredInstallPrompt = null;
+        });
+      } else {
+        openModal('modalPwaInstall');
+      }
+    }
+  </script>
+
+  <!-- Dedicated Clean Print Container: Rendered only when printing -->
+  <div id="printContainer" class="print-only"></div>
+</body>
+</html>
