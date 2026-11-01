@@ -993,14 +993,15 @@
       background: #107c41;
       color: #ffffff;
       font-weight: 700;
-      padding: 3px 6px;
+      padding: 2px 4px;
       border: 1px solid #0b6131;
-      font-size: 0.63rem;
+      font-size: 0.61rem;
       letter-spacing: 0.2px;
+      height: 18px;
     }
 
     .interactive-table td {
-      padding: 1px 2px;
+      padding: 1px;
       border: 1px solid #cbd5e1;
       background: #ffffff;
       vertical-align: middle;
@@ -1010,7 +1011,7 @@
       display: flex;
       flex-direction: column;
       gap: 1px;
-      padding: 1px 2px;
+      padding: 1px;
       width: 100%;
       box-sizing: border-box;
     }
@@ -1022,10 +1023,11 @@
       background: #f8fafc;
       border: 1px dashed #cbd5e1;
       border-radius: 3px;
-      padding: 1px 5px;
-      font-size: 0.58rem;
+      padding: 0 4px;
+      height: 13px;
+      font-size: 0.56rem;
       box-sizing: border-box;
-      line-height: 1.2;
+      line-height: 1.1;
       transition: all 0.15s;
     }
 
@@ -1061,15 +1063,15 @@
       box-sizing: border-box;
       border: 1px solid #cbd5e1;
       border-radius: 3px;
-      padding: 2px 6px;
-      font-size: 0.68rem;
+      padding: 1px 5px;
+      font-size: 0.67rem;
       font-weight: 700;
       color: #1e293b;
       outline: none;
       text-align: left;
       background: #ffffff;
       font-family: inherit;
-      height: 22px;
+      height: 20px;
       transition: all 0.15s;
     }
 
@@ -1088,8 +1090,8 @@
     /* IMAGE / SCREENSHOT */
     .image-preview-frame {
       width: 100%;
-      height: 64px !important;
-      max-height: 64px !important;
+      height: 52px !important;
+      max-height: 52px !important;
       background: #0f172a;
       border: 1px solid #cbd5e1;
       border-radius: 4px;
@@ -1103,7 +1105,7 @@
     .image-preview-frame svg {
       width: 100%;
       height: 100%;
-      max-height: 64px;
+      max-height: 52px;
       object-fit: contain;
     }
 
@@ -1170,14 +1172,14 @@
       border: 1.5px solid #cbd5e1;
       border-radius: 3px;
       padding: 1px 3px;
-      font-size: 0.66rem;
+      font-size: 0.65rem;
       font-weight: 700;
       color: #1e293b;
       text-align: center;
       outline: none;
       background: #ffffff;
       font-family: inherit;
-      height: 21px;
+      height: 20px;
     }
 
     .flow-input-box:focus {
@@ -3321,10 +3323,10 @@
        ELEMENT SPECS & PLACEMENT LOGIC
        ========================================================================== */
     const DEFAULT_SPECS = {
-      title: { width: 547, height: 155, defaultX: 24, defaultY: 24 },
-      table: { width: 547, height: 258, defaultX: 24, defaultY: 216 },
-      image: { width: 547, height: 132, defaultX: 24, defaultY: 494 },
-      flowchart: { width: 547, height: 118, defaultX: 24, defaultY: 646 }
+      title: { width: 547, height: 150, defaultX: 24, defaultY: 24 },
+      table: { width: 547, height: 315, defaultX: 24, defaultY: 196 },
+      image: { width: 547, height: 118, defaultX: 24, defaultY: 530 },
+      flowchart: { width: 547, height: 110, defaultX: 24, defaultY: 665 }
     };
 
     function placeElement(type, x, y) {
@@ -5122,7 +5124,7 @@
        PROGRESSIVE WEB APP (PWA) SERVICE WORKER & INSTALLATION
        ========================================================================== */
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=5', { scope: './' })
+      navigator.serviceWorker.register('./sw.js?v=6', { scope: './' })
         .then((reg) => {
           if (reg) {
             console.log('[PWA] Service Worker aktif untuk GitHub Pages:', reg.scope);
