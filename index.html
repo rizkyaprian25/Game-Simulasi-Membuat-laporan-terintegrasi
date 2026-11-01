@@ -2,6 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Progressive Web App (PWA) Offline Support -->
   <link rel="manifest" href="./manifest.json">
@@ -3318,10 +3321,10 @@
        ELEMENT SPECS & PLACEMENT LOGIC
        ========================================================================== */
     const DEFAULT_SPECS = {
-      title: { width: 547, height: 162, defaultX: 24, defaultY: 24 },
-      table: { width: 547, height: 268, defaultX: 24, defaultY: 202 },
-      image: { width: 547, height: 135, defaultX: 24, defaultY: 486 },
-      flowchart: { width: 547, height: 122, defaultX: 24, defaultY: 637 }
+      title: { width: 547, height: 155, defaultX: 24, defaultY: 24 },
+      table: { width: 547, height: 258, defaultX: 24, defaultY: 216 },
+      image: { width: 547, height: 132, defaultX: 24, defaultY: 494 },
+      flowchart: { width: 547, height: 118, defaultX: 24, defaultY: 646 }
     };
 
     function placeElement(type, x, y) {
@@ -5119,7 +5122,7 @@
        PROGRESSIVE WEB APP (PWA) SERVICE WORKER & INSTALLATION
        ========================================================================== */
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js', { scope: './' })
+      navigator.serviceWorker.register('./sw.js?v=5', { scope: './' })
         .then((reg) => {
           if (reg) {
             console.log('[PWA] Service Worker aktif untuk GitHub Pages:', reg.scope);
@@ -5129,6 +5132,15 @@
         .catch((err) => {
           console.warn('[PWA] Service worker info:', err);
         });
+
+      // Auto-reload once when new service worker activates so cache updates instantly
+      let refreshing = false;
+      if (typeof navigator.serviceWorker.addEventListener === 'function') navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
     }
 
     let deferredInstallPrompt = null;
