@@ -336,6 +336,34 @@
       gap: 5px;
     }
 
+    /* BUTTON PLACE ALL */
+    .btn-place-all {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+      transition: all 0.15s ease;
+    }
+    .btn-place-all:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+      background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+    }
+    .dock-btn-ideal {
+      color: #38bdf8 !important;
+      font-weight: 800;
+    }
+
     .panel-header .badge-pill {
       background: #e2e8f0;
       color: #475569;
@@ -1949,7 +1977,13 @@
 
       <div class="toolbox-instruction">
         <span>💡</span>
-        <span><b>Seret atau ketuk (+)</b> ke kertas A4, lalu <b>ketik teks panduan</b> yang sudah disediakan di atas setiap kolom!</span>
+        <span><b>Klik tombol (➕ Taruh)</b> untuk meletakkan elemen di posisi pas, lalu <b>ketik teks panduan</b>!</span>
+      </div>
+
+      <div style="padding: 6px 8px 0 8px;">
+        <button class="btn-place-all" onclick="placeAllElementsIdeal()" title="Taruh seluruh 4 elemen langsung pada posisi pas dan rapi">
+          <span>✨ Taruh Semua (Otomatis Pas)</span>
+        </button>
       </div>
 
       <!-- Mode Tap Notice -->
@@ -1961,7 +1995,7 @@
       <div class="toolbox-elements" id="toolboxElements">
         
         <!-- Elemen 1: Blok Judul & Teks (Word) -->
-        <div class="element-card" id="card-title" draggable="true" data-type="title">
+        <div class="element-card" id="card-title" draggable="true" data-type="title" onclick="placeElementFromPalette('title')">
           <div class="card-top">
             <div class="card-title-group">
               <div class="app-icon-badge icon-word">W</div>
@@ -1972,7 +2006,7 @@
           <p class="card-desc">Ketik judul laporan, nama penulis, kelas, dan pengantar ringkas komputer.</p>
           <div class="card-actions">
             <button class="card-btn card-btn-add" onclick="placeElementFromPalette('title')" title="Taruh langsung di posisi standar">
-              <span>➕ Taruh</span>
+              <span>➕ Taruh (Pas Rapi)</span>
             </button>
             <button class="card-btn card-btn-tap" onclick="startTapMode('title')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
               <span>🎯 Tap Letak</span>
@@ -1981,7 +2015,7 @@
         </div>
 
         <!-- Elemen 2: Tabel Data (Excel) -->
-        <div class="element-card" id="card-table" draggable="true" data-type="table">
+        <div class="element-card" id="card-table" draggable="true" data-type="table" onclick="placeElementFromPalette('table')">
           <div class="card-top">
             <div class="card-title-group">
               <div class="app-icon-badge icon-excel">X</div>
@@ -1992,7 +2026,7 @@
           <p class="card-desc">Ketik judul tabel dan lengkapi 4 baris data tabel perangkat atau jaringan.</p>
           <div class="card-actions">
             <button class="card-btn card-btn-add" onclick="placeElementFromPalette('table')" title="Taruh langsung di posisi standar">
-              <span>➕ Taruh</span>
+              <span>➕ Taruh (Pas Rapi)</span>
             </button>
             <button class="card-btn card-btn-tap" onclick="startTapMode('table')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
               <span>🎯 Tap Letak</span>
@@ -2001,7 +2035,7 @@
         </div>
 
         <!-- Elemen 3: Screenshot Snipping Tool -->
-        <div class="element-card" id="card-image" draggable="true" data-type="image">
+        <div class="element-card" id="card-image" draggable="true" data-type="image" onclick="placeElementFromPalette('image')">
           <div class="card-top">
             <div class="card-title-group">
               <div class="app-icon-badge icon-snip">✂️</div>
@@ -2012,7 +2046,7 @@
           <p class="card-desc">Tangkapan layar diagram komputer atau jaringan. Ketik keterangan gambarnya!</p>
           <div class="card-actions">
             <button class="card-btn card-btn-add" onclick="placeElementFromPalette('image')" title="Taruh langsung di posisi standar">
-              <span>➕ Taruh</span>
+              <span>➕ Taruh (Pas Rapi)</span>
             </button>
             <button class="card-btn card-btn-tap" onclick="startTapMode('image')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
               <span>🎯 Tap Letak</span>
@@ -2021,7 +2055,7 @@
         </div>
 
         <!-- Elemen 4: Diagram Alur Shapes -->
-        <div class="element-card" id="card-flowchart" draggable="true" data-type="flowchart">
+        <div class="element-card" id="card-flowchart" draggable="true" data-type="flowchart" onclick="placeElementFromPalette('flowchart')">
           <div class="card-top">
             <div class="card-title-group">
               <div class="app-icon-badge icon-shapes">🔀</div>
@@ -2032,7 +2066,7 @@
           <p class="card-desc">Bagan alur 4 langkah kerja komputer berurutan. Ketik setiap kotak langkahnya!</p>
           <div class="card-actions">
             <button class="card-btn card-btn-add" onclick="placeElementFromPalette('flowchart')" title="Taruh langsung di posisi standar">
-              <span>➕ Taruh</span>
+              <span>➕ Taruh (Pas Rapi)</span>
             </button>
             <button class="card-btn card-btn-tap" onclick="startTapMode('flowchart')" title="Pilih lalu ketuk kertas A4 di posisi yang diinginkan">
               <span>🎯 Tap Letak</span>
@@ -2100,7 +2134,7 @@
         <div class="mascot-speech-bubble">
           <div class="mascot-name-tag">Kiko • Redaksi Informatika</div>
           <div id="mascotMessage">
-            Halo Sobat Informatika! Letakkan 4 elemen ke kertas A4, lalu <b>ketik teks panduan tanpa simbol rumit</b> sebelum waktu habis! ⏱️
+            Halo Sobat Informatika! Klik tombol <b>➕ Taruh</b> atau <b>✨ Taruh Semua</b> untuk memasang elemen di posisi pas, lalu <b>ketik teks panduan</b>! ⏱️
           </div>
         </div>
       </div>
@@ -3291,25 +3325,21 @@
        ELEMENT SPECS & PLACEMENT LOGIC
        ========================================================================== */
     const DEFAULT_SPECS = {
-      title: { width: 547, height: 165, defaultX: 24, defaultY: 24 },
-      table: { width: 547, height: 255, defaultX: 24, defaultY: 198 },
-      image: { width: 547, height: 130, defaultX: 24, defaultY: 462 },
-      flowchart: { width: 547, height: 110, defaultX: 24, defaultY: 602 }
+      title: { width: 547, height: 148, defaultX: 24, defaultY: 24 },
+      table: { width: 547, height: 276, defaultX: 24, defaultY: 186 },
+      image: { width: 547, height: 135, defaultX: 24, defaultY: 476 },
+      flowchart: { width: 547, height: 114, defaultX: 24, defaultY: 625 }
     };
 
     function placeElement(type, x, y) {
       const spec = DEFAULT_SPECS[type];
 
-      if (x === undefined || y === undefined) {
-        x = spec.defaultX;
-        y = spec.defaultY;
-      }
-
+      // Always snap to ideal designated slot so layout is automatically 100% pas
       AppState.placedElements[type] = {
         id: type,
         type: type,
-        x: Math.max(10, Math.min(x, 595 - spec.width - 10)),
-        y: Math.max(10, Math.min(y, 842 - spec.height - 10)),
+        x: spec.defaultX,
+        y: spec.defaultY,
         width: spec.width,
         height: spec.height
       };
@@ -3320,8 +3350,8 @@
       selectElement(type);
       evaluateLayout(false);
 
-      setMascotReaction('happy', `Bagus! <b>${getElementTitle(type)}</b> sudah ada di kertas. Yuk <b>ketik teks panduannya</b>!`);
-      showToast('➕', `${getElementTitle(type)} diletakkan! Ketik teks panduannya.`);
+      setMascotReaction('happy', `Bagus! <b>${getElementTitle(type)}</b> sudah ditaruh di posisi pas dan rapi. Yuk <b>ketik teks panduannya</b>!`);
+      showToast('➕', `${getElementTitle(type)} diletakkan pas di kertas!`);
     }
 
     function removeElement(type) {
@@ -3342,11 +3372,55 @@
     function placeElementFromPalette(type) {
       cancelTapMode();
       if (AppState.placedElements[type]) {
+        // Snap to ideal slot and select
+        const spec = DEFAULT_SPECS[type];
+        AppState.placedElements[type].x = spec.defaultX;
+        AppState.placedElements[type].y = spec.defaultY;
+        AppState.placedElements[type].width = spec.width;
+        AppState.placedElements[type].height = spec.height;
+        renderAllPlacedElements();
         selectElement(type);
-        showToast('📍', `${getElementTitle(type)} sudah di atas kertas!`);
+        evaluateLayout(false);
+        showToast('📍', `${getElementTitle(type)} sudah di posisi pas!`);
       } else {
         placeElement(type);
       }
+    }
+
+    function snapToIdealSlot(type, e) {
+      if (e) e.stopPropagation();
+      const spec = DEFAULT_SPECS[type];
+      if (AppState.placedElements[type]) {
+        AppState.placedElements[type].x = spec.defaultX;
+        AppState.placedElements[type].y = spec.defaultY;
+        AppState.placedElements[type].width = spec.width;
+        AppState.placedElements[type].height = spec.height;
+        renderAllPlacedElements();
+        evaluateLayout(false);
+        showToast('🎯', `${getElementTitle(type)} dikembalikan ke posisi pas!`);
+      }
+    }
+
+    function placeAllElementsIdeal() {
+      cancelTapMode();
+      ['title', 'table', 'image', 'flowchart'].forEach(type => {
+        const spec = DEFAULT_SPECS[type];
+        AppState.placedElements[type] = {
+          id: type,
+          type: type,
+          x: spec.defaultX,
+          y: spec.defaultY,
+          width: spec.width,
+          height: spec.height
+        };
+      });
+
+      SoundFx.playSuccess();
+      renderAllPlacedElements();
+      updateToolboxCards();
+      evaluateLayout(false);
+      setMascotReaction('celebrate', 'Semua 4 elemen tersusun pas dan rapi di kertas A4! Sekarang kamu bisa fokus mengetik.');
+      showToast('✨', 'Semua 4 elemen tersusun pas!');
     }
 
     /* ==========================================================================
@@ -3380,16 +3454,8 @@
     DOM.a4Paper.addEventListener('click', (e) => {
       if (AppState.pendingTapPlacement) {
         const type = AppState.pendingTapPlacement;
-        const rect = DOM.a4Paper.getBoundingClientRect();
-        const scale = getCanvasScale();
-        const clickX = (e.clientX - rect.left) / scale;
-        const clickY = (e.clientY - rect.top) / scale;
-        const spec = DEFAULT_SPECS[type];
-        const placeX = Math.round(Math.max(10, Math.min(clickX - spec.width / 2, 595 - spec.width - 10)));
-        const placeY = Math.round(Math.max(10, Math.min(clickY - spec.height / 2, 842 - spec.height - 10)));
-
         cancelTapMode();
-        placeElement(type, placeX, placeY);
+        placeElement(type); // Always place into designated ideal slot
         return;
       }
 
@@ -3450,10 +3516,7 @@
 
       elNode.innerHTML = `
         <div class="element-control-dock">
-          <button class="dock-btn" onclick="moveElementUp('${type}', event)" title="Geser ke Atas">🔼 Naik</button>
-          <button class="dock-btn" onclick="moveElementDown('${type}', event)" title="Geser ke Bawah">🔽 Turun</button>
-          <button class="dock-btn" onclick="centerElement('${type}', event)" title="Ratakan ke Tengah">🎯 Tengah</button>
-          <button class="dock-btn" onclick="toggleElementWidth('${type}', event)" title="Ubah Ukuran Lebar">↔️ Lebar</button>
+          <button class="dock-btn dock-btn-ideal" onclick="snapToIdealSlot('${type}', event)" title="Kembalikan ke Posisi Pas & Rapi">✨ Pas Posisi</button>
           <button class="dock-btn dock-btn-danger" onclick="removeElement('${type}')" title="Hapus dari Kertas">🗑️ Hapus</button>
         </div>
         ${generateElementContentHtml(type)}
@@ -3497,28 +3560,29 @@
                        oninput="handleTyping('title', this.value, '${targets.title}', this)">
               </div>
 
-              <!-- 2. Input Nama Penulis (Bebas / Mandiri) -->
-              <div class="doc-field-group">
-                <div class="field-label-row">
-                  <span class="field-name">Nama Penulis:</span>
-                  <span class="field-target-hint">👉 Isi: <strong>Nama lengkapmu sendiri</strong></span>
+              <!-- 2. Input Nama Penulis & Kelas (Side-by-side Rapi & Pas) -->
+              <div style="display: flex; gap: 8px; width: 100%;">
+                <div class="doc-field-group" style="flex: 1.4; min-width: 0;">
+                  <div class="field-label-row">
+                    <span class="field-name">Nama:</span>
+                    <span class="field-target-hint">👉 <strong>Nama lengkap</strong></span>
+                  </div>
+                  <input type="text" class="input-field-doc ${isAuthorMatch ? 'is-valid' : ''}" 
+                         id="inputDocAuthor" placeholder="Ketik nama lengkap..." 
+                         value="${escapeHtml(typed.author)}"
+                         oninput="handleTyping('author', this.value, '', this)">
                 </div>
-                <input type="text" class="input-field-doc ${isAuthorMatch ? 'is-valid' : ''}" 
-                       id="inputDocAuthor" placeholder="Ketik nama lengkapmu sendiri..." 
-                       value="${escapeHtml(typed.author)}"
-                       oninput="handleTyping('author', this.value, '', this)">
-              </div>
 
-              <!-- 3. Input Kelas (Bebas / Mandiri) -->
-              <div class="doc-field-group">
-                <div class="field-label-row">
-                  <span class="field-name">Kelas:</span>
-                  <span class="field-target-hint">👉 Isi: <strong>Kelasmu (contoh: 8A / VIII B)</strong></span>
+                <div class="doc-field-group" style="flex: 1; min-width: 0;">
+                  <div class="field-label-row">
+                    <span class="field-name">Kelas:</span>
+                    <span class="field-target-hint">👉 <strong>Misal: 8A</strong></span>
+                  </div>
+                  <input type="text" class="input-field-doc ${isClassMatch ? 'is-valid' : ''}" 
+                         id="inputDocClass" placeholder="Kelas (8A/8B)..." 
+                         value="${escapeHtml(typed.classGrade || '')}"
+                         oninput="handleTyping('classGrade', this.value, '', this)">
                 </div>
-                <input type="text" class="input-field-doc ${isClassMatch ? 'is-valid' : ''}" 
-                       id="inputDocClass" placeholder="Ketik kelasmu (misal: 8A / VIII-1)..." 
-                       value="${escapeHtml(typed.classGrade || '')}"
-                       oninput="handleTyping('classGrade', this.value, '', this)">
               </div>
 
               <!-- 4. Input Pengantar -->
@@ -3898,6 +3962,15 @@
         if (isDragging) {
           isDragging = false;
           elNode.style.cursor = 'move';
+          // Snap to ideal position if released near its slot (within 60px)
+          const spec = DEFAULT_SPECS[type];
+          const elData = AppState.placedElements[type];
+          if (elData && Math.abs(elData.y - spec.defaultY) < 60) {
+            elData.x = spec.defaultX;
+            elData.y = spec.defaultY;
+            elNode.style.left = `${spec.defaultX}px`;
+            elNode.style.top = `${spec.defaultY}px`;
+          }
           evaluateLayout(false);
         }
       };
@@ -3933,12 +4006,7 @@
       DOM.a4Paper.classList.remove('drag-over');
       const type = e.dataTransfer.getData('text/plain');
       if (type && DEFAULT_SPECS[type]) {
-        const scale = getCanvasScale();
-        const rect = DOM.a4Paper.getBoundingClientRect();
-        const spec = DEFAULT_SPECS[type];
-        const dropX = Math.round(Math.max(10, Math.min((e.clientX - rect.left) / scale - spec.width / 2, 595 - spec.width - 10)));
-        const dropY = Math.round(Math.max(10, Math.min((e.clientY - rect.top) / scale - spec.height / 2, 842 - spec.height - 10)));
-        placeElement(type, dropX, dropY);
+        placeElement(type); // Always place into designated ideal slot
       }
     });
 
@@ -4374,32 +4442,7 @@
        AUTO-ARRANGE & IDEAL LAYOUT
        ========================================================================== */
     function applyIdealLayout() {
-      cancelTapMode();
-      AppState.placedElements['title'] = {
-        id: 'title', type: 'title',
-        x: 24, y: 24, width: 547, height: 165
-      };
-
-      AppState.placedElements['table'] = {
-        id: 'table', type: 'table',
-        x: 24, y: 198, width: 547, height: 255
-      };
-
-      AppState.placedElements['image'] = {
-        id: 'image', type: 'image',
-        x: 24, y: 462, width: 547, height: 130
-      };
-
-      AppState.placedElements['flowchart'] = {
-        id: 'flowchart', type: 'flowchart',
-        x: 24, y: 602, width: 547, height: 110
-      };
-
-      SoundFx.playSuccess();
-      renderAllPlacedElements();
-      updateToolboxCards();
-      evaluateLayout(false);
-      showToast('✨', 'Semua 4 elemen tersusun pas dan rapi!');
+      placeAllElementsIdeal();
     }
 
     DOM.btnAutoArrange.addEventListener('click', applyIdealLayout);
