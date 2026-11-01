@@ -720,80 +720,60 @@
       cursor: move;
       touch-action: none;
       z-index: 10;
-      border-radius: 8px;
-      border: 2px solid transparent;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      border-radius: 6px;
+      box-sizing: border-box;
+      transition: box-shadow 0.15s;
     }
 
     .placed-element:hover {
-      border-color: #93c5fd;
+      box-shadow: 0 0 0 2px #bfdbfe;
     }
 
     .placed-element.is-selected {
-      border-color: var(--primary-blue);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25), 0 8px 24px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 0 0 2.5px #2563eb, 0 6px 18px rgba(37, 99, 235, 0.12);
       z-index: 25;
     }
 
     .placed-element.is-overlapping {
-      border-color: #ef4444 !important;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+      box-shadow: 0 0 0 3px #ef4444 !important;
       animation: pulseWarning 1.2s infinite;
     }
 
     .placed-element.out-of-bounds {
-      border-color: #f59e0b !important;
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3) !important;
+      box-shadow: 0 0 0 3px #f59e0b !important;
     }
 
     @keyframes pulseWarning {
-      0%, 100% { border-color: #ef4444; }
-      50% { border-color: #fca5a5; }
+      0%, 100% { box-shadow: 0 0 0 3px #ef4444; }
+      50% { box-shadow: 0 0 0 3px #fca5a5; }
     }
 
-    /* FLOATING MINI-CONTROLS FOR SELECTED ELEMENT */
-    .element-control-dock {
-      position: absolute;
-      top: 4px;
-      right: 6px;
-      background: rgba(15, 23, 42, 0.92);
-      color: white;
-      border-radius: 7px;
-      padding: 2px 6px;
-      display: none;
-      align-items: center;
-      gap: 3px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-      z-index: 50;
-      white-space: nowrap;
-    }
-
-    .placed-element.is-selected .element-control-dock {
-      display: flex;
-    }
-
-    .dock-btn {
-      background: transparent;
-      border: none;
-      color: #e2e8f0;
-      padding: 2px 5px;
-      font-size: 0.66rem;
+    /* INTEGRATED HEADER ACTION BUTTONS */
+    .btn-element-action {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-size: 0.60rem;
       font-weight: 700;
+      padding: 1px 6px;
       border-radius: 4px;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 2px;
+      transition: all 0.15s;
+      line-height: 1.3;
     }
 
-    .dock-btn:hover {
-      background: #334155;
-      color: white;
+    .btn-element-action:hover {
+      background: #e2e8f0;
+      color: #0f172a;
     }
 
-    .dock-btn-danger:hover {
-      background: #ef4444;
-      color: white;
+    .btn-element-action.btn-del-slot:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
     }
 
     /* IN-DOCUMENT TYPING HELPER & INPUT BOXES */
@@ -858,13 +838,14 @@
     .doc-image-block,
     .doc-flowchart-block {
       background: #ffffff;
-      border: 1.5px solid #cbd5e1;
+      border: 1px solid #cbd5e1;
       border-radius: 6px;
-      padding: 5px 8px;
+      padding: 6px 9px;
       box-sizing: border-box;
       width: 100%;
-      max-width: 100%;
+      height: 100%;
       overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
     .doc-header-line {
@@ -872,10 +853,27 @@
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #f1f5f9;
       width: 100%;
       box-sizing: border-box;
+    }
+
+    .doc-header-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      flex: 1;
       overflow: hidden;
+    }
+
+    .doc-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
     .doc-badge {
@@ -902,9 +900,6 @@
       color: #64748b;
       font-weight: 600;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 280px;
     }
 
     .doc-field-group {
@@ -914,7 +909,6 @@
       margin-bottom: 2px;
       width: 100%;
       box-sizing: border-box;
-      overflow: hidden;
     }
 
     .field-label-row {
@@ -924,7 +918,7 @@
       gap: 6px;
       width: 100%;
       box-sizing: border-box;
-      overflow: hidden;
+      margin-bottom: 1px;
     }
 
     .field-name {
@@ -942,12 +936,13 @@
       border: 1px solid #bfdbfe;
       padding: 1px 6px;
       border-radius: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 380px;
+      line-height: 1.25;
       box-sizing: border-box;
-      flex-shrink: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .field-target-hint strong {
@@ -958,7 +953,7 @@
     .input-field-doc {
       width: 100%;
       box-sizing: border-box;
-      border: 1.5px solid #cbd5e1;
+      border: 1px solid #cbd5e1;
       background: #ffffff;
       border-radius: 4px;
       padding: 2px 6px;
@@ -979,6 +974,7 @@
     .input-field-doc.is-valid {
       border-color: #10b981 !important;
       background: #f0fdf4 !important;
+      color: #065f46 !important;
     }
 
     /* TABLE */
@@ -987,23 +983,22 @@
       border-collapse: collapse;
       font-size: 0.64rem;
       box-sizing: border-box;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
     .interactive-table th {
       background: #107c41;
       color: #ffffff;
       font-weight: 700;
-      padding: 2px 4px;
-      text-align: center;
+      padding: 3px 6px;
       border: 1px solid #0b6131;
-      font-size: 0.62rem;
+      font-size: 0.63rem;
+      letter-spacing: 0.2px;
     }
 
     .interactive-table td {
-      padding: 1px;
+      padding: 1px 2px;
       border: 1px solid #cbd5e1;
-      text-align: center;
       background: #ffffff;
       vertical-align: middle;
     }
@@ -1020,22 +1015,21 @@
     .cell-guide-text {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 4px;
-      background: #f1f5f9;
-      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
       border-radius: 3px;
-      padding: 1px 4px;
+      padding: 1px 5px;
       font-size: 0.58rem;
       box-sizing: border-box;
-      line-height: 1.15;
+      line-height: 1.2;
       transition: all 0.15s;
     }
 
     .cell-guide-label {
       color: #64748b;
-      font-weight: 600;
-      font-size: 0.55rem;
+      font-weight: 700;
+      font-size: 0.58rem;
       flex-shrink: 0;
     }
 
@@ -1043,14 +1037,12 @@
       color: #1e40af;
       font-weight: 800;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 180px;
     }
 
     .cell-guide-text.is-match {
       background: #ecfdf5 !important;
       border-color: #a7f3d0 !important;
+      border-style: solid !important;
     }
 
     .cell-guide-text.is-match .cell-guide-label {
@@ -1064,17 +1056,18 @@
     .table-cell-input {
       width: 100%;
       box-sizing: border-box;
-      border: 1.5px solid #cbd5e1;
+      border: 1px solid #cbd5e1;
       border-radius: 3px;
-      padding: 1px 4px;
-      font-size: 0.67rem;
+      padding: 2px 6px;
+      font-size: 0.68rem;
       font-weight: 700;
       color: #1e293b;
       outline: none;
-      text-align: center;
+      text-align: left;
       background: #ffffff;
       font-family: inherit;
-      height: 21px;
+      height: 22px;
+      transition: all 0.15s;
     }
 
     .table-cell-input:focus {
@@ -1092,8 +1085,8 @@
     /* IMAGE / SCREENSHOT */
     .image-preview-frame {
       width: 100%;
-      height: 66px !important;
-      max-height: 66px !important;
+      height: 64px !important;
+      max-height: 64px !important;
       background: #0f172a;
       border: 1px solid #cbd5e1;
       border-radius: 4px;
@@ -1107,7 +1100,7 @@
     .image-preview-frame svg {
       width: 100%;
       height: 100%;
-      max-height: 66px;
+      max-height: 64px;
       object-fit: contain;
     }
 
@@ -1163,9 +1156,9 @@
       color: #6b21a8;
       font-weight: 800;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 78px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
     }
 
     .flow-input-box {
@@ -3325,10 +3318,10 @@
        ELEMENT SPECS & PLACEMENT LOGIC
        ========================================================================== */
     const DEFAULT_SPECS = {
-      title: { width: 547, height: 148, defaultX: 24, defaultY: 24 },
-      table: { width: 547, height: 276, defaultX: 24, defaultY: 186 },
-      image: { width: 547, height: 135, defaultX: 24, defaultY: 476 },
-      flowchart: { width: 547, height: 114, defaultX: 24, defaultY: 625 }
+      title: { width: 547, height: 162, defaultX: 24, defaultY: 24 },
+      table: { width: 547, height: 268, defaultX: 24, defaultY: 202 },
+      image: { width: 547, height: 135, defaultX: 24, defaultY: 486 },
+      flowchart: { width: 547, height: 122, defaultX: 24, defaultY: 637 }
     };
 
     function placeElement(type, x, y) {
@@ -3514,13 +3507,7 @@
         elNode.classList.remove('is-selected');
       }
 
-      elNode.innerHTML = `
-        <div class="element-control-dock">
-          <button class="dock-btn dock-btn-ideal" onclick="snapToIdealSlot('${type}', event)" title="Kembalikan ke Posisi Pas & Rapi">✨ Pas Posisi</button>
-          <button class="dock-btn dock-btn-danger" onclick="removeElement('${type}')" title="Hapus dari Kertas">🗑️ Hapus</button>
-        </div>
-        ${generateElementContentHtml(type)}
-      `;
+      elNode.innerHTML = generateElementContentHtml(type);
 
       setTimeout(() => {
         if (AppState.placedElements[type]) {
@@ -3544,8 +3531,14 @@
           return `
             <div class="doc-text-block">
               <div class="doc-header-line">
-                <span class="doc-badge badge-word">📄 Pengolah Kata (MS Word)</span>
-                <span class="guide-hint">Ketik judul, nama, kelas bebas, dan pengantar</span>
+                <div class="doc-header-left">
+                  <span class="doc-badge badge-word">📄 Pengolah Kata (MS Word)</span>
+                  <span class="guide-hint">Ketik judul, nama, kelas bebas, & pengantar</span>
+                </div>
+                <div class="doc-header-actions">
+                  <button type="button" class="btn-element-action" onclick="snapToIdealSlot('title', event)" title="Kembalikan ke Posisi Pas">✨ Pas</button>
+                  <button type="button" class="btn-element-action btn-del-slot" onclick="removeElement('title')" title="Hapus dari Kertas">✕ Hapus</button>
+                </div>
               </div>
               
               <!-- 1. Input Judul -->
@@ -3606,8 +3599,14 @@
           return `
             <div class="doc-table-block">
               <div class="doc-header-line">
-                <span class="doc-badge badge-excel">📊 Lembar Kerja (MS Excel)</span>
-                <span class="guide-hint">Ketik judul tabel dan data sel (contoh tertera di tiap sel)</span>
+                <div class="doc-header-left">
+                  <span class="doc-badge badge-excel">📊 Lembar Kerja (MS Excel)</span>
+                  <span class="guide-hint">Ketik judul tabel dan isi data sel</span>
+                </div>
+                <div class="doc-header-actions">
+                  <button type="button" class="btn-element-action" onclick="snapToIdealSlot('table', event)" title="Kembalikan ke Posisi Pas">✨ Pas</button>
+                  <button type="button" class="btn-element-action btn-del-slot" onclick="removeElement('table')" title="Hapus dari Kertas">✕ Hapus</button>
+                </div>
               </div>
 
               <!-- Judul Tabel -->
@@ -3626,9 +3625,9 @@
               <table class="interactive-table">
                 <thead>
                   <tr>
-                    <th style="width:7%;">No</th>
-                    <th style="width:46.5%;">Nama Komponen / Lokasi / Kategori</th>
-                    <th style="width:46.5%;">Fungsi / Status / Keterangan</th>
+                    <th style="width:7%; text-align:center;">No</th>
+                    <th style="width:46.5%; text-align:left; padding-left:8px;">Nama Komponen / Lokasi / Kategori</th>
+                    <th style="width:46.5%; text-align:left; padding-left:8px;">Fungsi / Status / Keterangan</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -3685,8 +3684,14 @@
           return `
             <div class="doc-image-block">
               <div class="doc-header-line">
-                <span class="doc-badge badge-snip">✂️ Tangkapan Layar (Snipping Tool)</span>
-                <span class="guide-hint">Ketik keterangan tangkapan layar di bawah</span>
+                <div class="doc-header-left">
+                  <span class="doc-badge badge-snip">✂️ Tangkapan Layar (Snipping Tool)</span>
+                  <span class="guide-hint">Ketik keterangan tangkapan layar</span>
+                </div>
+                <div class="doc-header-actions">
+                  <button type="button" class="btn-element-action" onclick="snapToIdealSlot('image', event)" title="Kembalikan ke Posisi Pas">✨ Pas</button>
+                  <button type="button" class="btn-element-action btn-del-slot" onclick="removeElement('image')" title="Hapus dari Kertas">✕ Hapus</button>
+                </div>
               </div>
               <div class="image-preview-frame">
                 ${svgGraphic}
@@ -3713,8 +3718,14 @@
           return `
             <div class="doc-flowchart-block">
               <div class="doc-header-line">
-                <span class="doc-badge badge-shapes">🔀 Diagram Alur (Shapes)</span>
-                <span class="guide-hint">Ketik judul dan 4 kotak langkah alur berurutan</span>
+                <div class="doc-header-left">
+                  <span class="doc-badge badge-shapes">🔀 Diagram Alur (Shapes)</span>
+                  <span class="guide-hint">Ketik judul dan 4 kotak langkah</span>
+                </div>
+                <div class="doc-header-actions">
+                  <button type="button" class="btn-element-action" onclick="snapToIdealSlot('flowchart', event)" title="Kembalikan ke Posisi Pas">✨ Pas</button>
+                  <button type="button" class="btn-element-action btn-del-slot" onclick="removeElement('flowchart')" title="Hapus dari Kertas">✕ Hapus</button>
+                </div>
               </div>
 
               <!-- Judul Bagan -->
